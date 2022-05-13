@@ -23,14 +23,14 @@
 <meta property="og:site_name" content="胖对儿书屋">
 <meta property="og:description" content="【转载】Visualizing A Neural Machine Translation Model (Mechanics of Seq2seq Models With Attention)Sequence-to-sequence models are deep learning models that have achieved a lot of success in tasks like ma">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://wangkunwe1.github.io/img/attention.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/2022/05/07/Seq2SeqWithAttention.jpg">
 <meta property="article:published_time" content="2022-05-07T02:47:10.000Z">
-<meta property="article:modified_time" content="2022-05-12T11:54:32.916Z">
+<meta property="article:modified_time" content="2022-05-13T02:30:30.655Z">
 <meta property="article:author" content="Wang Kunwei">
 <meta property="article:tag" content="Attention">
 <meta property="article:tag" content="注意力机制">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://wangkunwe1.github.io/img/attention.png">
+<meta name="twitter:image" content="https://wangkunwe1.github.io/2022/05/07/Seq2SeqWithAttention.jpg">
   
   
   <title>Seq2SeqWithAttention - 胖对儿书屋</title>
@@ -213,7 +213,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.8k 字
+          6.5k 字
         
       </span>
     
@@ -224,7 +224,7 @@
         
         
         
-          65 分钟
+          55 分钟
         
       </span>
     
@@ -269,15 +269,29 @@
               <h1 id="【转载】Visualizing-A-Neural-Machine-Translation-Model-Mechanics-of-Seq2seq-Models-With-Attention"><a href="#【转载】Visualizing-A-Neural-Machine-Translation-Model-Mechanics-of-Seq2seq-Models-With-Attention" class="headerlink" title="【转载】Visualizing A Neural Machine Translation Model (Mechanics of Seq2seq Models With Attention)"></a>【转载】<a target="_blank" rel="noopener" href="https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/">Visualizing A Neural Machine Translation Model (Mechanics of Seq2seq Models With Attention)</a></h1><p>Sequence-to-sequence models are deep learning models that have achieved a lot of success in tasks like machine translation, text summarization, and image captioning. Google Translate started <a target="_blank" rel="noopener" href="https://blog.google/products/translate/found-translation-more-accurate-fluent-sentences-google-translate/">using</a> such a model in production in late 2016. These models are explained in the two pioneering papers (<a target="_blank" rel="noopener" href="https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf">Sutskever et al., 2014</a>, <a target="_blank" rel="noopener" href="http://emnlp2014.org/papers/pdf/EMNLP2014179.pdf">Cho et al., 2014</a>).</p>
 <p>I found, however, that understanding the model well enough to implement it requires unraveling a series of concepts that build on top of each other. I thought that a bunch of these ideas would be more accessible if expressed visually. That’s what I aim to do in this post. You’ll need some previous understanding of deep learning to get through this post. I hope it can be a useful companion to reading the papers mentioned above (and the attention papers linked later in the post).</p>
 <p>A sequence-to-sequence model is a model that takes a sequence of items (words, letters, features of an images…etc) and outputs another sequence of items. A trained model would work like this:</p>
-<p>&lt;video id&#x3D;”video” controls&#x3D;””src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_1.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_1_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
 <p>In neural machine translation, a sequence is a series of words, processed one after another. The output is, likewise, a series of words:</p>
-<p>&lt;video id&#x3D;”video” controls&#x3D;””src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_2.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_2_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <h2 id="Looking-under-the-hood"><a href="#Looking-under-the-hood" class="headerlink" title="Looking under the hood"></a>Looking under the hood</h2><p>Under the hood, the model is composed of an encoder and a decoder.</p>
 <p>The encoder processes each item in the input sequence, it compiles the information it captures into a vector (called the context). After processing the entire input sequence, the encoder sends the context over to the decoder, which begins producing the output sequence item by item.</p>
-<p>&lt;video id&#x3D;”video” controls&#x3D;””src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_3.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_3_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>The same applies in the case of machine translation.</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_3.mp4” preload&#x3D;”none”&gt;</p>
-<p>The context is a vector (an array of numbers, basically) in the case of machine translation. The encoder and decoder tend to both be recurrent neural networks (Be sure to check out Luis Serrano’s <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=UNmqTiOnRfg">A friendly introduction to Recurrent Neural Networks</a> for an intro to RNNs).</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_4_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
+<p>The context is a vector (an array of numbers, basically) in the case of machine translation. The encoder and decoder tend to both be recurrent neural networks (Be sure to check out Luis Serrano’s <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=UNmqTiOnRfg">A friendly introduction to Recurrent Neural Networks</a> for an intro to RNNs).<img src="/attention.png" srcset="/img/loading.gif" lazyload alt="attention"></p>
 <p><img src="/Seq2SeqWithAttention/context.png" srcset="/img/loading.gif" lazyload alt="context"></p>
 <p>[^]: The context is a vector of floats. Later in this post we will visualize vectors in color by assigning brighter colors to the cells with higher values.</p>
 <p>You can set the size of the context vector when you set up your model. It is basically the number of hidden units in the <font color="red">encoder</font> $ RNN. These visualizations show a vector of size 4, but in real world applications the context vector would be of a size like 256, 512, or 1024.</p>
@@ -285,27 +299,47 @@
 <p><img src="/./Seq2SeqWithAttention/embedding.png" srcset="/img/loading.gif" lazyload alt="embedding"></p>
 <p>[^ ]: We need to turn the input words into vectors before processing them. That transformation is done using a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Word_embedding">word embedding</a> algorithm. We can use <a target="_blank" rel="noopener" href="http://ahogrammer.com/2017/01/20/the-list-of-pretrained-word-embeddings/">pre-trained embeddings</a> or train our own embedding on our dataset. Embedding vectors of size 200 or 300 are typical, we’re showing a vector of size four for simplicity.</p>
 <p>Now that we’ve introduced our main vectors&#x2F;tensors, let’s recap the mechanics of an RNN and establish a visual language to describe these models:</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;RNN_1.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/RNN_1_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>The next RNN step takes the second input vector and hidden state #1 to create the output of that time step. Later in the post, we’ll use an animation like this to describe the vectors inside a neural machine translation model.</p>
 <p>In the following visualization, each pulse for the encoder or decoder is that RNN processing its inputs and generating an output for that time step. Since the encoder and decoder are both RNNs, each time step one of the RNNs does some processing, it updates its hidden state based on its inputs and previous inputs it has seen.</p>
 <p>Let’s look at the hidden states for the encoder. Notice how the last hidden state is actually the context we pass along to the decoder.</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_5.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_5_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>The decoder also maintains a hidden state that it passes from one time step to the next. We just didn’t visualize it in this graphic because we’re concerned with the major parts of the model for now.</p>
 <p>Let’s now look at another way to visualize a sequence-to-sequence model. This animation will make it easier to understand the static graphics that describe these models. This is called an “unrolled” view where instead of showing the one decoder, we show a copy of it for each time step. This way we can look at the inputs and outputs of each time step.</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_6.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_6_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <h1 id="Let’s-Pay-Attention-Now"><a href="#Let’s-Pay-Attention-Now" class="headerlink" title="Let’s Pay Attention Now"></a>Let’s Pay Attention Now</h1><p>The context vector turned out to be a bottleneck for these types of models. It made it challenging for the models to deal with long sentences. A solution was proposed in <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.0473">Bahdanau et al., 2014</a> and <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1508.04025">Luong et al., 2015</a>. These papers introduced and refined a technique called “Attention”, which highly improved the quality of machine translation systems. Attention allows the model to focus on the relevant parts of the input sequence as needed.</p>
 <p><img src="/Seq2SeqWithAttention/attention.png" srcset="/img/loading.gif" lazyload alt="attention"></p>
 <p>[^ ]: At time step 7, the attention mechanism enables the decoder to focus on the word “étudiant” (“student” in french) before it generates the English translation. This ability to amplify the signal from the relevant part of the input sequence makes attention models produce better results than models without attention.</p>
 <p>Let’s continue looking at attention models at this high level of abstraction. An attention model differs from a classic sequence-to-sequence model in two main ways:</p>
 <p>First, the encoder passes a lot more data to the decoder. Instead of passing the last hidden state of the encoding stage, the encoder passes <em>all</em> the hidden states to the decoder:</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_7.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_7_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>Second, an attention decoder does an extra step before producing its output. In order to focus on the parts of the input that are relevant to this decoding time step, the decoder does the following:</p>
 <ol>
 <li>Look at the set of encoder hidden states it received – each encoder hidden state is most associated with a certain word in the input sentence</li>
 <li>Give each hidden state a score (let’s ignore how the scoring is done for now)</li>
 <li>Multiply each hidden state by its softmaxed score, thus amplifying hidden states with high scores, and drowning out hidden states with low scores</li>
 </ol>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;attention_process.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/attention_process_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>This scoring exercise is done at each time step on the decoder side.</p>
 <p>Let us now bring the whole thing together in the following visualization and look at how the attention process works:</p>
 <ol>
@@ -317,9 +351,17 @@
 <li>The output of the feedforward neural networks indicates the output word of this time step.</li>
 <li>Repeat for the next time steps</li>
 </ol>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;attention_tensor_dance.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/attention_tensor_dance_gif.gif" srcset="/img/loading.gif" lazyload width="100%" heigh="100%"></center>
+
+
+
+
 <p>This is another way to look at which part of the input sentence we’re paying attention to at each decoding step:</p>
-<p>&lt;video id&#x3D;’video’, controls&#x3D;’’src&#x3D;”Seq2SeqWithAttention&#x2F;seq2seq_9.mp4” preload&#x3D;”none”&gt;</p>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_9_gif.gif" srcset="/img/loading.gif" lazyload></center>
+
+
+
+
 <p>Note that the model isn’t just mindless aligning the first word at the output with the first word from the input. It actually learned from the training phase how to align words in that language pair (French and English in our example). An example for how precise this mechanism can be comes from the attention papers listed above:</p>
 <p><img src="/./Seq2SeqWithAttention%5Cattention_sentence.png" srcset="/img/loading.gif" lazyload alt="attention_sentence"></p>
 <p>[^ ]: You can see how the model paid attention correctly when outputing “European Economic Area”. In French, the order of these words is reversed (“européenne économique zone”) as compared to English. Every other word in the sentence is in similar order.</p>
@@ -413,7 +455,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/05/12/markism_booklist/" title="马列主义入门书单">
+                      <a href="/2022/05/12/marxism_booklist/" title="马列主义入门书单">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">马列主义入门书单</span>
                         <span class="visible-mobile">上一篇</span>
