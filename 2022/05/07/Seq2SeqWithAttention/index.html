@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://wangkunwe1.github.io/images/Seq2SeqWithAttention.jpg">
 <meta property="article:published_time" content="2022-05-07T02:47:10.000Z">
-<meta property="article:modified_time" content="2022-05-14T06:21:33.884Z">
+<meta property="article:modified_time" content="2022-05-14T06:42:52.262Z">
 <meta property="article:author" content="Wang Kunwei">
 <meta property="article:tag" content="Attention">
 <meta property="article:tag" content="注意力机制">
@@ -273,12 +273,12 @@
 
 
 <p>In neural machine translation, a sequence is a series of words, processed one after another. The output is, likewise, a series of words:</p>
-<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_2_gif.gif" srcset="/img/loading.gif" lazyload width heigh></center>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_2.gif" srcset="/img/loading.gif" lazyload width heigh></center>
 
 
 <h2 id="Looking-under-the-hood"><a href="#Looking-under-the-hood" class="headerlink" title="Looking under the hood"></a>Looking under the hood</h2><p>Under the hood, the model is composed of an encoder and a decoder.</p>
 <p>The encoder processes each item in the input sequence, it compiles the information it captures into a vector (called the context). After processing the entire input sequence, the encoder sends the context over to the decoder, which begins producing the output sequence item by item.</p>
-<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_3_gif.gif" srcset="/img/loading.gif" lazyload width heigh></center>
+<center><img src="/2022/05/07/Seq2SeqWithAttention/seq2seq_3.gif" srcset="/img/loading.gif" lazyload width heigh></center>
 
 
 <p>The same applies in the case of machine translation.</p>
