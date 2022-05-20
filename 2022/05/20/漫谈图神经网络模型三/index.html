@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wang Kunwei">
+  <meta name="keywords" content="demo hexo">
+  
+    <meta name="description" content="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)本文属于图神经网络的系列文章，文章目录如下：  从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一) 从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二) 从图(Graph)到图卷积(Graph Convolution)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈图神经网络模型三">
+<meta property="og:url" content="https://wangkunwe1.github.io/2022/05/20/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/index.html">
+<meta property="og:site_name" content="胖对儿书屋">
+<meta property="og:description" content="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)本文属于图神经网络的系列文章，文章目录如下：  从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一) 从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二) 从图(Graph)到图卷积(Graph Convolution)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160543image-21-graph-isomorphism.jpg">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160551image-22-histogram.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160556image-23-fuzzy-histogram.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160600image-24-diff-pool.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160604image-25-soft-cluster.png">
+<meta property="article:published_time" content="2022-05-20T00:59:59.000Z">
+<meta property="article:modified_time" content="2022-05-20T01:05:39.463Z">
+<meta property="article:author" content="Wang Kunwei">
+<meta property="article:tag" content="图神经网络">
+<meta property="article:tag" content="图卷积">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160543image-21-graph-isomorphism.jpg">
+  
+  
+  <title>漫谈图神经网络模型三 - 胖对儿书屋</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"wangkunwe1.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>胖对儿书屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="漫谈图神经网络模型三"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-20 08:59" pubdate>
+          2022年5月20日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">漫谈图神经网络模型三</h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="【转载】从图-Graph-到图卷积-Graph-Convolution-：漫谈图神经网络模型-三"><a href="#【转载】从图-Graph-到图卷积-Graph-Convolution-：漫谈图神经网络模型-三" class="headerlink" title="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)"></a>【转载】<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)</a></h1><p>本文属于图神经网络的系列文章，文章目录如下：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_1.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html"><strong>从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)</strong></a></li>
+</ul>
+<hr>
+<p>恭喜你看到了本系列的第三篇！前面两篇博客分别介绍了基于循环的图神经网络和基于卷积的图神经网络，那么在本篇中，我们则主要关注在<strong>得到了各个结点的表示后，如何生成整个图的表示</strong>。其实之前我们也举了一些例子，比如最朴素的方法，例如图上所有结点的表示取个均值，即可得到图的表示。那有没有更好的方法呢，它们各自的优点和缺点又是什么呢，本篇主要对上面这两个问题做一点探讨。篇幅不多，理论也不艰深，请读者放心地看。</p>
+<h2 id="图读出操作-ReadOut"><a href="#图读出操作-ReadOut" class="headerlink" title="图读出操作(ReadOut)#"></a>图读出操作(ReadOut)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%9B%BE%E8%AF%BB%E5%87%BA%E6%93%8D%E4%BD%9Creadout">#</a></h2><p>图读出操作，顾名思义，就是用来生成图表示的。它的别名有图粗化(<em>翻译捉急</em>，Graph Coarsening)&#x2F;图池化(Graph Pooling)。对于这种操作而言，它的核心要义在于：<strong>操作本身要对结点顺序不敏感</strong>。</p>
+<p>这是为什么呢？这就不得不提到图本身的一些性质了。我们都知道，在欧氏空间中，如果一张图片旋转了，那么形成的新图片<strong>就不再是原来那张图片</strong>了；但在非欧式空间的图上，如果一个图旋转一下，例如对它的结点重新编号，这样形成的图与原先的图其实是一个。这就是典型的**图重构(Graph Isomorphism)**问题。比如下面左右两个图，其实是等价的：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131160543image-21-graph-isomorphism.jpg"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160543image-21-graph-isomorphism.jpg" srcset="/img/loading.gif" lazyload alt="图重构"></a></p>
+<p>为了使得同构图的表示能够保持一致，图读出的操作就需要对结点顺序不敏感。在数学上，能表达这种操作的函数也被称为<strong>对称函数</strong>。</p>
+<p>那么我们一般如何实现图读出操作呢？笔者接下来主要介绍两种方法：<strong>基于统计的方法</strong> 与 <strong>基于学习的方法</strong>。</p>
+<h2 id="基于统计的方法-Statistics-Category"><a href="#基于统计的方法-Statistics-Category" class="headerlink" title="基于统计的方法(Statistics Category)#"></a>基于统计的方法(Statistics Category)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%9F%BA%E4%BA%8E%E7%BB%9F%E8%AE%A1%E7%9A%84%E6%96%B9%E6%B3%95statistics-category">#</a></h2><p>基于统计的方法应该是最常见的，比如说我们在求各种抽象表示所使用的 <strong>平均(mean)<strong>，</strong>求和(sum)<strong>，</strong>取最大(max)</strong> 等操作。这些方法简单有效，又不会带来额外的模型参数。但同时我们必须承认，这些方法的信息损失太大。假设一个图里有 1000个结点，每个结点的表示是 100维；整张图本可表达 1000 * 100 的特征，这些简单的统计函数却直接将信息量直接压缩到了100维。尤其是，在这个过程中，每一维上数据的分布特性被完全抹除。</p>
+<p>考虑到这一点，文献[1]的作者就提出要用类似直方图的方法来对每维数据分布进行建模。具体而言，请读者先通过下面的对比图来直观感受一下直方图是如何巧妙平衡<strong>数据信息的压缩</strong>与<strong>增强</strong>的。假设我们有100个介于<code>[-3,1]</code>的数字，如果我们直接将它们求和，如左图所示，我们完全看不出这100个数据的分布；而如果我们将<code>[-3, 1]</code>等分成4个区域，比如说就是<code>[-3,-2)</code>,<code>[-2,-1)</code>,<code>[-1,0)</code> 和 <code>[0,1)</code>。我们分开统计各个区域的和，可以发现一点原数据的分布特征，就如下右侧子图所示：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131160551image-22-histogram.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160551image-22-histogram.png" srcset="/img/loading.gif" lazyload alt="直方图"></a></p>
+<p>如果要实现上面这个直方图的做法，该如何做呢？其实也很简单，我们举个例子。给定3个数据点，它们的特征向量(2维)分别是<code>[-2, 1]</code>, <code>[-1, 2]</code> 和 <code>[-1, 1]</code>。如果直接求和，全局的特征向量是 <code>[-2+-1+-1, 1+2+1]</code> 即 <code>[-4,4]</code>。如果采取上述直方图的方式，则可能会得到一个这样的全局特征向量<code>[-2, -1 + -1, 1 + 1, 2]</code>(第1,2维代表从原先的第1维统计的直方图,对应的区域为<code>[-2,1),[1,2)</code>,第3,4维的含义类似)。但在实践中，文献[1]没有直接利用这种方法，而是采用<strong>高斯函数</strong>来实现名为**模糊直方图(Fuzzy Histogram)**的操作。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131160556image-23-fuzzy-histogram.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160556image-23-fuzzy-histogram.png" srcset="/img/loading.gif" lazyload alt="模糊直方图"></a></p>
+<p>模糊直方图的原理也很简单：预先定义几个特征值区域的边界点为各个高斯分布的均值，并预设好方差。对任一特征值，根据其与各个高斯分布交点的纵坐标作为其落入该区域的数值，然后将所有数值归一化，就得到了该特征值分布在各个区间的比例。举个例子，图上的<code>[1.8]</code>与三个高斯分布的交点分别在0,0.3,0.9处，归一化一下，即可知该特征值最终应该用一个3维向量<code>[0.0, 0.25, 0.75]</code>来表示。</p>
+<h2 id="基于学习的方法-Learning-Category"><a href="#基于学习的方法-Learning-Category" class="headerlink" title="基于学习的方法(Learning Category)#"></a>基于学习的方法(Learning Category)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%9F%BA%E4%BA%8E%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%96%B9%E6%B3%95learning-category">#</a></h2><p>基于统计的方法的一个坏处大概是它没办法参数化，间接地难以表示结点到图向量的这个“复杂”过程。基于学习的方法就是希望用神经网络来拟合这个过程。</p>
+<h3 id="采样加全连接-Sample-And-FC"><a href="#采样加全连接-Sample-And-FC" class="headerlink" title="采样加全连接(Sample And FC)#"></a>采样加全连接(Sample And FC)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E9%87%87%E6%A0%B7%E5%8A%A0%E5%85%A8%E8%BF%9E%E6%8E%A5sample-and-fc">#</a></h3><p>最简单又最直接的做法，大概就是取固定数量的结点，通过一个**全连接层(Fully Connected Layer)**得到图的表示。这里不论是随机采样也好，还是根据某些规则采样，都需要得到确定数量的结点，如果不够就做填充。公式也很简单直接（$H^L$指的是将采样到的结点表示拼接在一起）：<br>$$<br>h_G&#x3D;FC(H^L)<br>$$<br>这种方法的一个问题在于很难适用于规模差距很大的图。比如说训练时见过的图只有几百个结点，但测试的图可能有上千个结点，这种方法很难泛化。</p>
+<h3 id="全局结点-Global-Node"><a href="#全局结点-Global-Node" class="headerlink" title="全局结点(Global Node)#"></a>全局结点(Global Node)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%85%A8%E5%B1%80%E7%BB%93%E7%82%B9global-node">#</a></h3><p>这一种做法的动机也很简单，考虑到图同构问题和基于统计的方法，从结点的表示生成最终的图表示主要有两个难点：</p>
+<ol>
+<li>很多情况下我们很难找到一个合适的根结点（笔者觉得图的根结点一般都是根据各个领域的领域知识来确定的，比如我们在第一篇博客中讲到的化合物分类问题）</li>
+<li>如果直接用基于统计的方法对各个结点一视同仁，无法区别对待（比如某些重要的结点信息更多，就应该表达得更多）。</li>
+</ol>
+<p>那我直接引入一个全局结点代表这张图的根结点，把它跟图中的每个结点通过一种特殊的边连接，最终拿这个结点的表示作为图的表示，岂不妙哉。</p>
+<h3 id="可微池化-Differentiable-Pooling"><a href="#可微池化-Differentiable-Pooling" class="headerlink" title="可微池化(Differentiable Pooling)#"></a>可微池化(Differentiable Pooling)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%8F%AF%E5%BE%AE%E6%B1%A0%E5%8C%96differentiable-pooling">#</a></h3><p>上面两种方法都比较简单，不会<strong>层次化</strong>地去获得图的表示。所以在论文[2]中，作者提出了一种层次化的图表示，而这则依赖于他们所提出的**可微池化(Differentiable Pooling, DiffPool)**技术。简单来讲，它不希望各个结点一次性得到图的表示，而是希望通过一个逐渐压缩信息的过程，来得到最终图的表示，如下图所示：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131160600image-24-diff-pool.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160600image-24-diff-pool.png" srcset="/img/loading.gif" lazyload alt="可微池化"></a></p>
+<p>相比于一般先通过GCN得到所有结点表示(H^L)，再通过方法汇总得到图的最终表示的方法，DiffPool则同时完成了两个任务：**结点聚类(Soft Clustering)<strong>与</strong>结点表示(Node Representation)**。这两个任务是由两个不共享参数的GCN模块分别完成的，下文用 SC 和 NR 分别表示这两个模块。NR 模块与传统的GCN一样，输入是各结点的隐藏状态，通过图上的传播，输出是传播后各个结点的表示。SC 模块则不同，它的输入虽然也是各结点的隐藏表示，但其输出的是各结点属于不同聚类簇的概率(注意这里每一层聚类簇的数目是预先定义的)。上图中最左侧每个结点右上方的表格即代表这个。举个例子，假设本层子图有6个结点，将各个结点输出的簇分类概率堆叠在一起，即可得到矩阵$\pmb {S^l}$，如下图所示(蓝色，橙色和绿色分别代表三个聚类簇。在实际中，聚类矩阵不是离散变量，而是连续变量。)：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131160604image-25-soft-cluster.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/o_200131160604image-25-soft-cluster.png" srcset="/img/loading.gif" lazyload alt="结点聚类"></a></p>
+<p>以$\pmb {A^l}$表示第$l$层子图结点的邻接关系，$\pmb A^0$即是图的邻接矩阵，$\pmb N_l$表示第$l$层子图结点的个数，$H^l$表示第$l$层子图各个结点表示堆叠而成的隐状态矩阵，DiffPool通过如下公式得到新子图中各个结点的表示：<br>$$<br>\begin{align}<br>S^l&amp;&#x3D;SC(A^l,H^l),其中S^l\in \mathbb{R} ^{N_l\times N_{l+1}}\<br>\tilde{H}^l &amp;&#x3D;NR(A^l,H^l)\<br>H^{l+1}&amp;&#x3D;(S^l)^T\tilde{H}^l<br>\end{align}<br>$$<br>除了各个结点的表示外，还有一个很重要的事情是生成新子图$\pmb {A^{l+1}}$的邻接关系：<br>$$<br>A^{l+1}&#x3D;(S^l)^TA^lS^l<br>$$</p>
+<h3 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法#"></a>其他方法<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95">#</a></h3><p>还有一些其他方法，就如前文所提到的 PATCHY-SAN，通过基于规则的方法对图进行排序，将图排成序列，然后使用类似于CNN做文本分类的方法，使用1-D Pooling都得到图表示。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献#"></a>参考文献<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">#</a></h2><p>[1]. Molecular graph convolutions moving beyond fingerprints, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1603.00856">https://arxiv.org/abs/1603.00856</a></p>
+<p>[2]. Hierarchical Graph Representation Learning with Differentiable Pooling, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.08804">https://arxiv.org/abs/1806.08804</a></p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="category-chain-item">图神经网络</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#图神经网络</a>
+      
+        <a href="/tags/%E5%9B%BE%E5%8D%B7%E7%A7%AF/">#图卷积</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>漫谈图神经网络模型三</div>
+      <div>https://wangkunwe1.github.io/2022/05/20/漫谈图神经网络模型三/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wang Kunwei</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月20日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/20/latex-symbols/" title="latex_symbols">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">latex_symbols</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/20/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/" title="漫谈图神经网络模型二">
+                        <span class="hidden-mobile">漫谈图神经网络模型二</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

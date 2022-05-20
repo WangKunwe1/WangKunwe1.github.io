@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wang Kunwei">
+  <meta name="keywords" content="demo hexo">
+  
+    <meta name="description" content="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)本文属于图神经网络的系列文章，文章目录如下：  从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一) 从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二) 从图(Graph)到图卷积(Graph Convolution)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈图神经网络模型二">
+<meta property="og:url" content="https://wangkunwe1.github.io/2022/05/20/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/index.html">
+<meta property="og:site_name" content="胖对儿书屋">
+<meta property="og:description" content="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)本文属于图神经网络的系列文章，文章目录如下：  从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一) 从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二) 从图(Graph)到图卷积(Graph Convolution)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-9-cnn-and-gcn.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-10-gcn-framework.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-11-convolution-basic.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-12-conv-signal.gif">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-13-conv-cnn.gif">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-12-basic-spatial-conv.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-13-mpnn.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-14-graphsage.jpg">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-14-pathcy-san-framework.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-15-pathcy-san-detail.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/image-15-ft-example.gif">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155807image-16-ft-transoform-before.jpg">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155816image-17-ft-transoform-after.jpg">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155821image-18-ft-cnn-example.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155826image-19-graph-laplacian-matrix.png">
+<meta property="og:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155831image-20-graph-spectral-network.png">
+<meta property="article:published_time" content="2022-05-20T00:59:52.000Z">
+<meta property="article:modified_time" content="2022-05-20T01:04:16.618Z">
+<meta property="article:author" content="Wang Kunwei">
+<meta property="article:tag" content="图神经网络">
+<meta property="article:tag" content="图卷积">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://wangkunwe1.github.io/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-9-cnn-and-gcn.png">
+  
+  
+  <title>漫谈图神经网络模型二 - 胖对儿书屋</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"wangkunwe1.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>胖对儿书屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="漫谈图神经网络模型二"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-20 08:59" pubdate>
+          2022年5月20日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          95 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">漫谈图神经网络模型二</h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="【转载】从图-Graph-到图卷积-Graph-Convolution-：漫谈图神经网络模型-二"><a href="#【转载】从图-Graph-到图卷积-Graph-Convolution-：漫谈图神经网络模型-二" class="headerlink" title="【转载】从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)"></a>【转载】<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)</a></h1><p>本文属于图神经网络的系列文章，文章目录如下：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_1.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (一)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html"><strong>从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (二)</strong></a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_3.html">从图(Graph)到图卷积(Graph Convolution)：漫谈图神经网络模型 (三)</a></li>
+</ul>
+<hr>
+<p>在<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network.html">上一篇博客</a>中，我们简单介绍了基于循环图神经网络的两种重要模型，在本篇中，我们将着大量笔墨介绍<strong>图卷积神经网络中的卷积操作</strong>。接下来，我们将首先介绍一下图卷积神经网络的大概框架，借此说明它与基于循环的图神经网络的区别。接着，我们将从头开始为读者介绍卷积的基本概念，以及其在物理模型中的涵义。最后，我们将详细地介绍两种不同的卷积操作，分别为<strong>空域卷积</strong>和<strong>频域卷积</strong>，与其对应的经典模型。读者不需有任何信号处理方面的基础，傅里叶变换等概念都会在本文中详细介绍。</p>
+<h2 id="图卷积缘起"><a href="#图卷积缘起" class="headerlink" title="图卷积缘起#"></a>图卷积缘起<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9B%BE%E5%8D%B7%E7%A7%AF%E7%BC%98%E8%B5%B7">#</a></h2><p>在开始正式介绍图卷积之前，我们先花一点篇幅探讨一个问题：<strong>为什么研究者们要设计图卷积操作，传统的卷积不能直接用在图上吗？</strong> 要理解这个问题，我们首先要理解能够应用传统卷积的<strong>图像(欧式空间)<strong>与</strong>图(非欧空间)<strong>的区别。如果把图像中的每个像素点视作一个结点，如下图左侧所示，一张图片就可以看作一个非常稠密的图；下图右侧则是一个普通的图。阴影部分代表</strong>卷积核</strong>，左侧是一个传统的卷积核，右侧则是一个图卷积核。卷积代表的含义我们会在后文详细叙述，这里读者可以将其理解为在局部范围内的特征抽取方法。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-9-cnn-and-gcn.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-9-cnn-and-gcn.png" srcset="/img/loading.gif" lazyload alt="GGNN语义解析实例"></a></p>
+<p>仔细观察两个图的结构，我们可以发现它们之间有2点非常不一样：</p>
+<ul>
+<li>在图像为代表的欧式空间中，结点的邻居数量都是固定的。比如说绿色结点的邻居始终是8个(边缘上的点可以做Padding填充)。但在图这种非欧空间中，结点有多少邻居并不固定。目前绿色结点的邻居结点有2个，但其他结点也会有5个邻居的情况。</li>
+<li>欧式空间中的卷积操作实际上是用<strong>固定大小可学习的卷积核</strong>来抽取像素的特征，比如这里就是抽取绿色结点对应像素及其相邻像素点的特征。但是因为图里的邻居结点不固定，所以传统的卷积核不能直接用于抽取图上结点的特征。</li>
+</ul>
+<p>真正的难点聚焦于<strong>邻居结点数量不固定</strong>上。那么，研究者如何解决这个问题呢？其实说来也很简单，目前主流的研究从2条路来解决这件事：</p>
+<ul>
+<li>提出一种方式把非欧空间的图转换成欧式空间。</li>
+<li>找出一种可处理变长邻居结点的卷积核在图上抽取特征。</li>
+</ul>
+<p>这两条实际上也是后续图卷积神经网络的设计原则，<strong>图卷积</strong>的本质是想找到<strong>适用于图的可学习卷积核</strong>。</p>
+<h2 id="图卷积框架-Framework"><a href="#图卷积框架-Framework" class="headerlink" title="图卷积框架(Framework)#"></a>图卷积框架(Framework)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9B%BE%E5%8D%B7%E7%A7%AF%E6%A1%86%E6%9E%B6framework">#</a></h2><p>上面说了图卷积的核心特征，下面我们先来一窥图卷积神经网络的全貌。如下图所示，输入的是整张图，在<code>Convolution Layer 1</code>里，对每个结点的邻居都进行一次卷积操作，并用卷积的结果更新该结点；然后经过激活函数如<code>ReLU</code>，然后再过一层卷积层<code>Convolution Layer 2</code>与一层激活函数；反复上述过程，直到层数达到预期深度。与GNN类似，图卷积神经网络也有一个局部输出函数，用于将结点的状态(包括隐藏状态与结点特征)转换成任务相关的标签，比如水军账号分类，本文中笔者称这种任务为<code>Node-Level</code>的任务；也有一些任务是对整张图进行分类的，比如化合物分类，本文中笔者称这种任务为<code>Graph-Level</code>的任务。<strong>卷积操作关心每个结点的隐藏状态如何更新</strong>，而对于<code>Graph-Level</code>的任务，它们会在卷积层后加入更多操作。本篇博客主要关心如何在图上做卷积，至于如何从结点信息得到整张图的表示，我们将在下一篇系列博客中讲述。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-10-gcn-framework.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-10-gcn-framework.png" srcset="/img/loading.gif" lazyload alt="图卷积神经网络全貌"></a></p>
+<p>多说一句，GCN与GNN乍看好像还挺像的。为了不让读者误解，在这里我们澄清一下它们根本上的不同：GCN是多层堆叠，比如上图中的<code>Layer 1</code>和<code>Layer 2</code>的参数是不同的；GNN是迭代求解，可以看作每一层Layer参数是共享的。</p>
+<h2 id="卷积-Convolution"><a href="#卷积-Convolution" class="headerlink" title="卷积(Convolution)#"></a>卷积(Convolution)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%8D%B7%E7%A7%AFconvolution">#</a></h2><p>正如我们在上篇博客的开头说到的，图卷积神经网络主要有两类，一类是基于<strong>空域</strong>的，另一类则是基于<strong>频域</strong>的。通俗点解释，空域可以类比到直接在图片的像素点上进行卷积，而频域可以类比到对图片进行傅里叶变换后，再进行卷积。傅里叶变换的概念我们先按下不讲，我们先对两类方法的代表模型做个大概介绍。</p>
+<p>基于空域卷积的方法直接将卷积操作定义在每个结点的连接关系上，它跟传统的卷积神经网络中的卷积更相似一些。在这个类别中比较有代表性的方法有 Message Passing Neural Networks(MPNN)[1], GraphSage[2], Diffusion Convolution Neural Networks(DCNN)[3], PATCHY-SAN[4]等。</p>
+<p>基于频域卷积的方法则从图信号处理起家，包括 Spectral CNN[5], Cheybyshev Spectral CNN(ChebNet)[6], 和 First order of ChebNet(1stChebNet)[7]等。</p>
+<p>在介绍这些具体的模型前，先让我们从不同的角度来回顾一下卷积的概念，重新思考一下卷积的本质。</p>
+<h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念#"></a>基础概念<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5">#</a></h3><p>由维基百科的介绍我们可以得知，<strong>卷积</strong>是一种定义在两个函数($\pmb f$跟$\pmb g$)上的数学操作，旨在产生一个新的函数。那么$\pmb f$和$\pmb g$的卷积就可以写成$\pmb {f<em>g}$，数学定义如下：<br>$$<br>(f</em>g)(t)&#x3D;\int_{-\infty}^{\infty}f(\tau)g(t-\tau)—–连续形式\<br>(f*g)(t)&#x3D;\sum_{-\infty}^{\infty}f(\tau)g(t-\tau)—–离散形式<br>$$</p>
+<h3 id="实例-掷骰子问题"><a href="#实例-掷骰子问题" class="headerlink" title="实例:掷骰子问题#"></a>实例:掷骰子问题<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%AE%9E%E4%BE%8B%E6%8E%B7%E9%AA%B0%E5%AD%90%E9%97%AE%E9%A2%98">#</a></h3><p>光看数学定义可能会觉得非常抽象，下面我们举一个掷骰子的问题，该实例参考了知乎问题”如何通俗易懂地解释卷积”[8]的回答。</p>
+<p>想象我们现在有两个骰子，两个骰子分别是$\pmb f$跟$\pmb g$，f(1)f(1)表示骰子$\pmb f$向上一面为数字$\pmb 1$的概率。同时抛掷这两个骰子1次，它们正面朝上数字和为4的概率是多少呢？相信读者很快就能想出它包含了三种情况，分别是：</p>
+<ul>
+<li>$\pmb f$ 向上为1，$\pmb g$ 向上为3；</li>
+<li>$\pmb f$ 向上为2，$\pmb g$ 向上为2；</li>
+<li>$\pmb f$ 向上为3，$\pmb g$ 向上为1；</li>
+</ul>
+<p>最后这三种情况出现的概率和即问题的答案，如果写成公式，就是 $\sum_{\tau -1}^3f(\tau)g(4-\tau)$。可以形象地绘制成下图：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-11-convolution-basic.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-11-convolution-basic.png" srcset="/img/loading.gif" lazyload alt="卷积基本概念"></a></p>
+<p>如果稍微扩展一点，比如说我们认为 $\pmb {f(0)}$ 或者 $\pmb {g(0)}$ 等是可以取到的，只是它们的值为0而已。那么该公式可以写成$\sum_{\tau &#x3D;\infty}^{\infty}f(\tau)g(4-\tau)$。仔细观察，这其实就是卷积 $\pmb {(f*g)(4)}$ 。如果将它写成内积的形式，卷积其实就是 $[f(-\infty),\cdots,f(1),\cdots,f(\infty)]\cdot[g(\infty),\cdots,g(3),\cdots,g(-\infty)]$。这么一看，是不是就对卷积的名字理解更深刻了呢? 所谓卷积，其实就是把一个函数卷(翻)过来，然后与另一个函数求内积。</p>
+<p>对应到不同方面，卷积可以有不同的解释：$\pmb g$ 既可以看作我们在深度学习里常说的<strong>核</strong>(Kernel)，也可以对应到信号处理中的<strong>滤波器</strong>(Filter)。而 $\pmb f$ 可以是我们所说的机器学习中的<strong>特征</strong>(Feature)，也可以是信号处理中的<strong>信号</strong>(Signal)。f和g的卷积 $(f∗g)$就可以看作是对$\pmb f$的加权求和。下面两个动图就分别对应信号处理与深度学习中卷积操作的过程[9][10]。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-12-conv-signal.gif"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-12-conv-signal.gif" srcset="/img/loading.gif" lazyload alt="信号处理中的卷积"></a></p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-13-conv-cnn.gif"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-13-conv-cnn.gif" srcset="/img/loading.gif" lazyload alt="深度学习中的卷积"></a></p>
+<h2 id="空域卷积-Spatial-Convolution"><a href="#空域卷积-Spatial-Convolution" class="headerlink" title="空域卷积(Spatial Convolution)#"></a>空域卷积(Spatial Convolution)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E7%A9%BA%E5%9F%9F%E5%8D%B7%E7%A7%AFspatial-convolution">#</a></h2><p>介绍完卷积的基础概念后，我们先来介绍下<strong>空域卷积</strong>(Spatial Convolution)。从设计理念上看，空域卷积与深度学习中的卷积的应用方式类似，其核心在于<strong>聚合邻居结点的信息</strong>。比如说，一种最简单的无参卷积方式可以是：将所有直连邻居结点的隐藏状态加和，来更新当前结点的隐藏状态。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-12-basic-spatial-conv.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-12-basic-spatial-conv.png" srcset="/img/loading.gif" lazyload alt="最简单的空域卷积"></a></p>
+<blockquote>
+<p>这里非参式的卷积只是为了举一个简单易懂的例子，实际上图卷积在建模时需要的都是带参数、可学习的卷积核。</p>
+</blockquote>
+<h3 id="消息传递网络-Message-Passing-Neural-Network"><a href="#消息传递网络-Message-Passing-Neural-Network" class="headerlink" title="消息传递网络(Message Passing Neural Network)#"></a>消息传递网络(Message Passing Neural Network)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E7%BD%91%E7%BB%9Cmessage-passing-neural-network">#</a></h3><p>消息传递网络(MPNN)[1] 是由Google科学家提出的一种模型。严格意义上讲，MPNN不是一种具体的模型，而是一种空域卷积的形式化框架。它将空域卷积分解为两个过程：<strong>消息传递</strong>与<strong>状态更新</strong>操作，分别由 $\pmb {M_l(\cdot)}$ 和 $\pmb {U_l(\cdot)}$ 函数完成。将结点 $\pmb {v}$ 的特征 $\pmb {x_v}$ 作为其隐藏状态的初始态 $\pmb {h_v^0}$ 后，空域卷积对隐藏状态的更新由如下公式表示：<br>$$<br>h_v^{l+1}&#x3D;U_{t+1}(h_v,\sum_{u\in ne[v]}M_{l+1}(h_v^l,h_u^l,x_{vu})<br>$$<br>其中ll代表图卷积的第ll层，上式的物理意义是：收到来自每个邻居的的消息 $\pmb {M_{l+1}}$ 后，每个结点如何更新自己的状态。</p>
+<p>如果读者还记得GGNN的话，可能会觉得这个公式与GGNN的公式很像。实际上，它们是截然不同的两种方式：GCN中通过级联的层捕捉邻居的消息，GNN通过级联的时间来捕捉邻居的消息；前者层与层之间的参数不同，后者可以视作层与层之间共享参数。MPNN的示意图如下[11]：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-13-mpnn.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-13-mpnn.png" srcset="/img/loading.gif" lazyload alt="MPNN网络模型"></a></p>
+<h3 id="图采样与聚合-Graph-Sample-and-Aggregate"><a href="#图采样与聚合-Graph-Sample-and-Aggregate" class="headerlink" title="图采样与聚合(Graph Sample and Aggregate)#"></a>图采样与聚合(Graph Sample and Aggregate)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9B%BE%E9%87%87%E6%A0%B7%E4%B8%8E%E8%81%9A%E5%90%88graph-sample-and-aggregate">#</a></h3><p>MPNN很好地概括了空域卷积的过程，但定义在这个框架下的所有模型都有一个共同的缺陷：卷积操作针对的对象是<strong>整张图</strong>，也就意味着要将所有结点放入内存&#x2F;显存中，才能进行卷积操作。但对实际场景中的大规模图而言，整个图上的卷积操作并不现实。GraphSage[2]提出的动机之一就是解决这个问题。从该方法的名字我们也能看出，区别于传统的全图卷积，GraphSage利用<strong>采样</strong>(Sample)部分结点的方式进行学习。当然，即使不需要整张图同时卷积，GraphSage仍然需要聚合邻居结点的信息，即论文中定义的<em>aggregate</em>的操作。这种操作类似于MPNN中的<strong>消息传递</strong>过程。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-14-graphsage.jpg"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-14-graphsage.jpg" srcset="/img/loading.gif" lazyload alt="GraphSage采样过程"></a></p>
+<p>具体地，GraphSage中的采样过程分为三步:</p>
+<ol>
+<li>在图中随机采样若干个结点，结点数为传统任务中的<code>batch_size</code>。对于每个结点，随机选择固定数目的邻居结点(这里邻居不一定是一阶邻居，也可以是二阶邻居)构成进行卷积操作的图。</li>
+<li>将邻居结点的信息通过aggregate函数聚合起来更新刚才采样的结点。</li>
+<li>计算采样结点处的损失。如果是无监督任务，我们希望图上邻居结点的编码相似；如果是监督任务，即可根据具体结点的任务标签计算损失。</li>
+</ol>
+<p>最终，GraphSage的状态更新公式如下：<br>$$<br>h_v^{l+1}&#x3D;\sigma(W^(l+1)\cdot aggregate(h_v^l,{h_u^l},\forall u\in ne[e]))<br>$$<br>GraphSage的设计重点就放在了aggregate函数的设计上。它可以是不带参数的$\pmb {max,mean}$, 也可以是带参数的如LSTMLSTM等神经网络。核心的原则仍然是，它需要可以处理变长的数据。在本系列博客的第三篇笔者会介绍卷积神经网络中针对图任务的<code>ReadOut</code>操作，aggregate函数的设计与其有异曲同工之妙，此处就不展开叙述了。</p>
+<h3 id="图结构序列化-PATCHY-SAN"><a href="#图结构序列化-PATCHY-SAN" class="headerlink" title="图结构序列化(PATCHY-SAN)#"></a>图结构序列化(PATCHY-SAN)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9B%BE%E7%BB%93%E6%9E%84%E5%BA%8F%E5%88%97%E5%8C%96patchy-san">#</a></h3><p>我们之前曾提到卷积神经网络不能应用在图结构上是因为图是非欧式空间，所以大部分算法都沿着<strong>找到适用于图</strong>的卷积核这个思路来走。而 PATCHY-SAN 算法 [4] 另辟蹊径，它将图结构转换成了序列结构，然后直接利用卷积神经网络在转化成的序列结构上做卷积。由于 PATCHY-SAN在其论文中主要用于图的分类任务，我们下面的计算过程也主要针对图分类问题(例如，判断某个社群的职业)。</p>
+<p>那么，图结构转换成序列结构最主要的挑战在何处呢，如果简单的话，为什么以前的工作没有尝试把图转成序列结构呢？就笔者个人的观点来看，这种序列转换要保持图结构的两个特点：1. 同构的性质。 2. 邻居结点的连接关系。对于前者而言，意味着当我们把图上结点的标号随机打乱，得到的仍应是一样的序列。简单来说就是，同构图产生的序列应当相似，甚至一样；对于后者，则意味着我们要保持邻居结点与目标结点的距离关系，如在图中的三阶邻居在序列中不应该成为一阶邻居等。</p>
+<p>PATCHY-SAN 通过以下三个步骤来解决这两个问题：</p>
+<ol>
+<li>**结点选择(Node Squenece Selection)**。该过程旨在与通过一些人为定义的规则(如度大的结点分数很高，邻居的度大时分数较高等)为每个结点指定一个在图中的排序。在完成排序后，取出前 $\pmb \omega$ 个结点作为整个图的代表。</li>
+<li>**邻居结点构造(Neighborhood graph construction)**。在完成结点排序后，以第1步选择的结点为中心，得到它们的邻居(这里的邻居可以是第一阶邻居，也可以是二阶邻居)结点，就构成了 $\pmb \omega$ 个团。根据第1步得到的结点排序对每个团中的邻居结点进行排序，再取前 $\pmb k$ 个邻居结点按照顺序排列，即组成 $\pmb \omega$ 个有序的团。</li>
+<li>**图规范化(Graph Noermalization)**。按照每个团中的结点顺序可将所有团转换成固定长度的序列$\pmb {(k+1)}$，再将它们按照中心结点的排序从前到后依次拼接，即可得到一个长度为 $\pmb {\omega\ast(k+1)}$ 的代表整张图的序列。这样，我们就可以直接使用带1D的卷积神经网络对该序列建模，比如图分类(可类比文本序列分类)。值得注意的一点是，在第1步和第2步中，如果取不到 $\pmb \omega$ 或 $\pmb k$ 个结点时，要使用空结点作填充(padding)。</li>
+</ol>
+<p>一个形象的流程图如下所示，图源自论文[4]。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-14-pathcy-san-framework.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-14-pathcy-san-framework.png" srcset="/img/loading.gif" lazyload alt="Pathcy-san framework"></a></p>
+<p>下图可能可以帮助读者更好地理解这种算法，图来自[12]。整个流程自底向上：首先根据自定义规则对图里的结点进行排序，然后选择前6个结点，即图中的 1至6；接着我们把这些结点</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_image-15-pathcy-san-detail.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_image-15-pathcy-san-detail.png" srcset="/img/loading.gif" lazyload alt="Patchy-san 具体样例"></a></p>
+<h2 id="频域卷积-Spectral-Convolution"><a href="#频域卷积-Spectral-Convolution" class="headerlink" title="频域卷积(Spectral Convolution)#"></a>频域卷积(Spectral Convolution)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E9%A2%91%E5%9F%9F%E5%8D%B7%E7%A7%AFspectral-convolution">#</a></h2><p>空域卷积非常直观地借鉴了图像里的卷积操作，但据笔者的了解，它缺乏一定的理论基础。而频域卷积则不同，相比于空域卷积而言，它主要利用的是**图傅里叶变换(Graph Fourier Transform)<strong>实现卷积。简单来讲，它利用图的</strong>拉普拉斯矩阵(Laplacian matrix)<strong>导出其频域上的的拉普拉斯算子，再类比频域上的欧式空间中的卷积，导出图卷积的公式。虽然公式的形式与空域卷积非常相似，但频域卷积的推导过程却有些艰深晦涩。接下来我们将攻克这部分看起来很难的数学公式，主要涉及到</strong>傅里叶变换(Fourier Transform)<strong>和</strong>拉普拉斯算子(Laplacian operator)**。即使读者没有学过任何相关知识也不要紧，笔者将尽可能用形象的描述解释每个公式的涵义，让读者能感悟这些公式的美妙之处。</p>
+<h3 id="前置内容"><a href="#前置内容" class="headerlink" title="前置内容#"></a>前置内容<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%89%8D%E7%BD%AE%E5%86%85%E5%AE%B9">#</a></h3><p>如上所述，在本小节，我们将介绍两个主要的知识点：傅里叶变换与拉普拉斯算子。在介绍之前，我们先抛出两个问题：1. 什么是傅里叶变换; 2. 如何将傅里叶变换扩展到图结构上。这两个问题是前置内容部分要解决的核心问题，读者可带着这两个问题，完成下面内容的阅读。</p>
+<h4 id="傅里叶变换-Fourier-Transform"><a href="#傅里叶变换-Fourier-Transform" class="headerlink" title="傅里叶变换(Fourier Transform)#"></a>傅里叶变换(Fourier Transform)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2fourier-transform">#</a></h4><p>借用维基百科的说法，**傅里叶变换(Fourier Transform, FT)<strong>会将一个在空域(或时域)上定义的函数分解成频域上的若干频率成分。换句话说，傅里叶变换可以将一个函数从空域变到频域。先抛开傅里叶变换的数学公式不谈，用 $\pmb F$ 来表示傅里叶变换的话，我们先讲一个很重要的恒等式：<br>$$<br>(f\ast g)(t)&#x3D;F^{-1}[F[f(t)]\odot F[g(t)]]<br>$$<br>这里的F−1F−1指的是傅里叶逆变换，⊙⊙是哈达玛乘积，指的是两个矩阵(或向量)的</strong>逐点乘积(Element-wise Multiplication)*<em>。仔细观察上面这个公式，它的直观含义可以用一句话来概括：</em>空(时)域卷积等于频域乘积*。简单来说就是，如果要算 $\pmb f$ 与 $\pmb g$ 的卷积，可以先将它们通过傅里叶变换变换到频域中，将两个函数在频域中相乘，然后再通过傅里叶逆变换转换出来，就可以得到 $\pmb f$ 与 $\pmb g$ 的卷积结果。下面的动图形象地展示了傅里叶变换的过程，这里我们把函数 $\pmb f$ 傅里叶变换后的结果写作 $\pmb{\widehat{f}}$.</p>
+<p><a target="_blank" rel="noopener" href="https://blog-static.cnblogs.com/files/SivilTaram/image-15-ft-example.gif"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/image-15-ft-example.gif" srcset="/img/loading.gif" lazyload alt="傅里叶变换的示例"></a></p>
+<p>那傅里叶变换能干啥呢，有一个简单的应用是给图像去除一些规律噪点。比如说下面这个例子，原图来自知乎 [13]。</p>
+<p>在傅里叶变换前，图像上有一些规律的条纹，直接在原图上去掉条纹有点困难，但我们可以将图片通过傅里叶变换变到频谱图中，频谱图中那些规律的点就是原图中的背景条纹。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131155807image-16-ft-transoform-before.jpg"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155807image-16-ft-transoform-before.jpg" srcset="/img/loading.gif" lazyload alt="傅里叶变换的示例"></a></p>
+<p>只要在频谱图中擦除这些点，就可以将背景条纹去掉，得到下图右侧的结果。</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131155816image-17-ft-transoform-after.jpg"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155816image-17-ft-transoform-after.jpg" srcset="/img/loading.gif" lazyload alt="傅里叶变换的示例"></a></p>
+<p>除了可以用来分离噪声点与正常点，傅里叶变换还凭借上面的恒等式，在加速卷积运算方面有很大的潜力，**快速傅里叶变换(Fast Fourier Transform)**也是由此而生。实际上呢，现在大家最常用的卷积神经网络，完全可以搭配傅里叶变换。下面这张图就表示了一个普通的卷积神经网络如何与傅里叶变换搭配，其中的 IFFT 即 <strong>快速傅里叶变换的逆变换(Inverse Fast Fourier Transform</strong>：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131155821image-18-ft-cnn-example.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155821image-18-ft-cnn-example.png" srcset="/img/loading.gif" lazyload alt="傅里叶变换的示例"></a></p>
+<p>其实笔者在初识傅里叶变换时很好奇，既然FFT可以加速卷积神经网络，为什么现在的卷积神经网络不用呢? 在经过一些搜索与思考后，笔者将自己得到的结论抛砖引玉供读者参考：我们现在的卷积神经网络的核都很小，常见的都如1，3，5之类，卷积操作的时间开销本来就不大。如果要搭配FFT，还需要做傅里叶变换与逆变换，时间开销并不一定会减小。</p>
+<p>说了这么半天，傅里叶变换的公式是什么样呢？实际上，$\pmb f$经过傅里叶变换后的结果就$\pmb{\widehat{f}}$如下所示，其中 $\pmb {i&#x3D;\sqrt{-1}}$(虚数单位)，t是任意实数。<br>$$<br>\widehat{f}(t)&#x3D;\int f(x)\exp^{-2\pi ixt}<br>$$<br>感兴趣的同学可以深入研究一下傅里叶变换这一套，我们这里关心的实际上是 $\pmb {\exp^{-2\pi ixt}}$的物理意义，它是图上类比构造傅里叶变换的关键。这个式子实际上是拉普拉斯算子$\pmb \Delta$的广义特征函数。</p>
+<blockquote>
+<p>拉普拉斯算子(Laplacian operator) 的物理意义是空间二阶导，准确定义是：标量梯度场中的散度，一般可用于描述物理量的流入流出。比如说在二维空间中的温度传播规律，一般可以用拉普拉斯算子来描述。</p>
+</blockquote>
+<p>为什么是特征函数呢，我们这里根据拉普拉斯算子的定义来稍微推导一下。众所周知，特征向量需要满足的定义式是：对于矩阵$\pmb A$，其特征向量满足的条件应是矩阵与特征向量$\pmb x$做乘法的结果，与特征向量乘标量λλ的结果一样，即满足如下等式。<br>$$<br>Ax&#x3D;\lambda x<br>$$<br>稍微推导一下即可知道，拉普拉斯算子作用在$\pmb {\exp^{-2\pi ixt}}$确实满足以上特征向量的定义:<br>$$<br>\Delta \exp^{-2\pi ixt}&#x3D;\frac{\partial^2}{\partial t^2}\exp^{-2\pi ixt}&#x3D;-4\pi^2x^2\exp^{-2\pi ixt}<br>$$<br>这里∂∂是求导符号，$\pmb {\partial^2}$是二阶导。</p>
+<p>实际上，再仔细观察傅里叶变换的式子，它本质上是将函数$f(t)$映射到了以$\pmb {\exp^{-2\pi ixt}}$为基向量的空间中。</p>
+<h4 id="图上的傅里叶变换"><a href="#图上的傅里叶变换" class="headerlink" title="图上的傅里叶变换#"></a>图上的傅里叶变换<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%9B%BE%E4%B8%8A%E7%9A%84%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2">#</a></h4><p>终于讲到我们本节的重点内容了，上面我们絮絮叨叨地铺垫了很多傅里叶变换的知识，主要是为了将傅里叶变换类比到图上。那么问题来了:在图上，我们去哪找拉普拉斯算子 $\pmb \Delta$ 与 $\pmb {\exp^{-2\pi ixt}}$呢？</p>
+<p>聪明的研究者们找到了图的<strong>拉普拉斯矩阵(L)<strong>及其</strong>特征向量(uu)<strong>，作为上述两者的替代品。至此，形成了图上傅里叶变换的生态系统。拉普拉斯矩阵，实际上是</strong>度矩阵(D)<strong>减去</strong>邻接矩阵(A)</strong> $ \pmb {L&#x3D;D−A}$，如下图所示，图源自[14].</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131155826image-19-graph-laplacian-matrix.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155826image-19-graph-laplacian-matrix.png" srcset="/img/loading.gif" lazyload alt="拉普拉斯矩阵"></a></p>
+<p>频域卷积的前提条件是图必须是无向图，那么$\pmb L$就是对称矩阵。所以它可以按照如下公式分解:<br>$$<br>\begin{align}<br>L&amp;&#x3D;U\Lambda U^T\<br>U&amp;&#x3D;(u_1,u_2,\cdots,u_n)\<br>\Lambda&amp;&#x3D; \begin{bmatrix}\lambda_1 &amp;\cdots &amp;0\<br>\cdots &amp;\cdots &amp;\cdots\<br>0 &amp;\cdots &amp;\lambda_n\end{bmatrix}<br>\end{align}<br>$$<br>那么，根据上面卷积与傅里叶结合的变换公式，图上频域卷积的公式便可以写成 $\widehat{f}(t)&#x3D;\sum_{n&#x3D;1}^N f(n)u_t(n)$。如果在整个图的$\pmb N$个结点上一起做卷积，就可以得到整张图上的卷积如下：<br>$$<br>\widehat{f}&#x3D;\begin{bmatrix}\widehat{f}(1)\\cdots\\widehat{f}(N)<br>\end{bmatrix}&#x3D;U^Tf<br>$$<br>让我们重新审视一下欧式空间上的卷积和图上的卷积，即可明白图上的卷积与传统的卷积其实非常相似，这里 $\pmb f$ 都是特征函数，$\pmb g$ 都是卷积核：<br>$$<br>\begin{align}<br>(f<em>g)&#x3D;F^{-1}[F[f]\odot F[g]]\<br>(f</em>Gg)&#x3D;U(U^Tf\odot U^Tg)&#x3D;U(U^Tg\odot U^Tf)<br>\end{align}<br>$$<br>如果把 $\pmb U^Tg$ 整体看作可学习的卷积核，这里我们把它写作 $g\theta$。最终图上的卷积公式即是：<br>$$<br>o&#x3D;(f*Gg)_\theta<br>$$<br>接下来我们要介绍的图上频域卷积的工作，都是在$g_\theta$的基础上做文章。</p>
+<h3 id="频域卷积网络-Spectral-CNN"><a href="#频域卷积网络-Spectral-CNN" class="headerlink" title="频域卷积网络(Spectral CNN)#"></a>频域卷积网络(Spectral CNN)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E9%A2%91%E5%9F%9F%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9Cspectral-cnn">#</a></h3><p>我们上面推导的这个 $g_\theta$ 就是首个提出的频域卷积神经网络的卷积核[15]。假设ll层的隐藏状态为$h^l\in R^{N\times d_l}$，类似地，第$l+1$层为$h^{l+1}\in R^{N\times d_{l+1}}$。频域卷积层的状态更新计算公式如下：<br>$$<br>h_{:,j}^{l+1}&#x3D;\sigma(U\sum_{i&#x3D;1}^{d_l}\Theta_{i,j}^lU^Th_{:,i}^l)\<br>\Theta_{i,j}^l&#x3D;\begin{bmatrix}\theta_1 &amp;\cdots&amp;0\\cdots&amp;\cdots&amp;\cdots\0&amp;\cdots&amp;\theta_N<br>\end{bmatrix}<br>$$<br>仔细观察上式，可以发现一层卷积层参数有 $N\times d_l\times d_{l+1}$个。这里的$\Theta_{i,j}^l$其实可以类比全连接神经网络中的权重$\omega_{i,j}$，为了方便读者理解，笔者做了下面的示意图：</p>
+<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/SivilTaram/1510485/o_200131155831image-20-graph-spectral-network.png"><img src="/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%BA%8C/o_200131155831image-20-graph-spectral-network.png" srcset="/img/loading.gif" lazyload alt="示意图"></a></p>
+<h3 id="切比雪夫网络-ChebNet"><a href="#切比雪夫网络-ChebNet" class="headerlink" title="切比雪夫网络(ChebNet)#"></a>切比雪夫网络(ChebNet)<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%88%87%E6%AF%94%E9%9B%AA%E5%A4%AB%E7%BD%91%E7%BB%9Cchebnet">#</a></h3><p>基本的频域卷积网络要计算拉普拉斯矩阵所有的特征值和特征向量，计算量巨大。在论文[16]中提出了切比雪夫网络，它应用**切比雪夫多项式(Chebyshev polynomials)**来加速特征矩阵的求解。假设切比雪夫多项式的第k项是 $\pmb {T_K}$, 频域卷积核的计算方式如下：</p>
+<blockquote>
+<p>切比雪夫多项式是以递归方式定义的一系列正交多项式序列。</p>
+</blockquote>
+<p>$$<br>g_\theta&#x3D;\sum_{k&#x3D;0}^{K-1}\theta_kT_k(\tilde{\Lambda}),where \tilde{\Lambda}&#x3D;\frac{2\Lambda}{\lambda_{max}}-I_N<br>$$</p>
+<p>那么$\pmb {T_k}$ 怎么来呢，可以由切比雪夫多项式的定义得来:$T_k(x)&#x3D;2xT_{k-1}(x)-T_{k-2}(x)$，递推式的前两项为$T_0(x)&#x3D;1$以及$T_1(x)&#x3D;x$。$\tilde{\Lambda}$的作用是让特征向量矩阵归一化到$[-1,1]$之间。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献#"></a>参考文献<a target="_blank" rel="noopener" href="https://www.cnblogs.com/SivilTaram/p/graph_neural_network_2.html#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">#</a></h2><p>[1]. Neural Message Passing for Quantum Chemistry, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.01212">https://arxiv.org/abs/1704.01212</a></p>
+<p>[2]. Inductive Representation Learning on Large Graphs, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.02216">https://arxiv.org/abs/1706.02216</a></p>
+<p>[3]. Diffusion-Convolutional Neural Networks, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.02136">https://arxiv.org/abs/1511.02136</a></p>
+<p>[4]. Learning Convolutional Neural Networks for Graphs, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1605.05273">https://arxiv.org/pdf/1605.05273</a></p>
+<p>[5]. Spectral Networks and Locally Connected Networks on Graphs, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1312.6203">https://arxiv.org/abs/1312.6203</a></p>
+<p>[6]. Convolutional neural networks on graphs with fast localized spectral filtering, <a target="_blank" rel="noopener" href="https://papers.nips.cc/paper/6081-convolutional-neural-networks-on-graphs-with-fast-localized-spectral-filtering">https://papers.nips.cc/paper/6081-convolutional-neural-networks-on-graphs-with-fast-localized-spectral-filtering</a></p>
+<p>[7]. Semi-Supervised Classification with Graph Convolutional Networks, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1609.02907">https://arxiv.org/pdf/1609.02907</a></p>
+<p>[8]. 如何通俗易懂地解释卷积, <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22298352">https://www.zhihu.com/question/22298352</a></p>
+<p>[9]. <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Convolution">https://en.wikipedia.org/wiki/Convolution</a></p>
+<p>[10]. <a target="_blank" rel="noopener" href="https://mlnotebook.github.io/post/CNN1/">https://mlnotebook.github.io/post/CNN1/</a></p>
+<p>[11]. <a target="_blank" rel="noopener" href="http://snap.stanford.edu/proj/embeddings-www">http://snap.stanford.edu/proj/embeddings-www</a></p>
+<p>[12]. <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37840709">https://zhuanlan.zhihu.com/p/37840709</a></p>
+<p>[13]. <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20460630/answer/105888045">https://www.zhihu.com/question/20460630/answer/105888045</a></p>
+<p>[14]. <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Laplacian_matrix">https://en.wikipedia.org/wiki/Laplacian_matrix</a></p>
+<p>[15]. Spectral Networks and Locally Connected Networks on Graphs<br>, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1312.6203">https://arxiv.org/abs/1312.6203</a></p>
+<p>[16]. Convolutional neural networks on graphs with fast localized spectral filtering, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1606.09375">https://arxiv.org/abs/1606.09375</a></p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="category-chain-item">图神经网络</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">#图神经网络</a>
+      
+        <a href="/tags/%E5%9B%BE%E5%8D%B7%E7%A7%AF/">#图卷积</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>漫谈图神经网络模型二</div>
+      <div>https://wangkunwe1.github.io/2022/05/20/漫谈图神经网络模型二/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wang Kunwei</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月20日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/20/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%89/" title="漫谈图神经网络模型三">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">漫谈图神经网络模型三</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/17/%E6%BC%AB%E8%B0%88%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E4%B8%80/" title="漫谈图神经网络模型一">
+                        <span class="hidden-mobile">漫谈图神经网络模型一</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
