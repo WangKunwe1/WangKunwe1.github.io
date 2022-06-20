@@ -16,19 +16,19 @@
   <meta name="author" content="Wang Kunwei">
   <meta name="keywords" content="demo hexo">
   
-    <meta name="description" content="转载自：GPU之nvidia-smi命令详解 1、nvidia-smi介绍 nvidia-sim简称NVSMI，提供监控GPU使用情况和更改GPU状态的功能，是一个跨平台工具，支持所有标准的NVIDIA驱动程序支持的Linux和WindowsServer 2008 R2 开始的64位系统。这个工具是N卡驱动附带的，只要装好驱动，就会有这个命令 2、nvidia-smi常用命令介绍 1）显示GPU当">
+    <meta name="description" content="转载自：GPU之nvidia-smi命令详解（我在查询时候遇到了nvcc -V命令和nvidia-smi命令查询出来版本不一致，这是因为CUDA有两个主要的API:runtime API和driver API. 这两个API都有对应的CUDA版本。用于支持driver API的必要文件是由GPU driver installer安装的。nvidia-msi属于这一类；用于runtime API的必">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nivida_smi">
 <meta property="og:url" content="https://wangkunwe1.github.io/2022/06/20/nivida-smi/index.html">
 <meta property="og:site_name" content="胖对儿书屋">
-<meta property="og:description" content="转载自：GPU之nvidia-smi命令详解 1、nvidia-smi介绍 nvidia-sim简称NVSMI，提供监控GPU使用情况和更改GPU状态的功能，是一个跨平台工具，支持所有标准的NVIDIA驱动程序支持的Linux和WindowsServer 2008 R2 开始的64位系统。这个工具是N卡驱动附带的，只要装好驱动，就会有这个命令 2、nvidia-smi常用命令介绍 1）显示GPU当">
+<meta property="og:description" content="转载自：GPU之nvidia-smi命令详解（我在查询时候遇到了nvcc -V命令和nvidia-smi命令查询出来版本不一致，这是因为CUDA有两个主要的API:runtime API和driver API. 这两个API都有对应的CUDA版本。用于支持driver API的必要文件是由GPU driver installer安装的。nvidia-msi属于这一类；用于runtime API的必">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/20/nivida-smi/fdf97e3eb1a6499b8d55e520eebcae11.png">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/20/nivida-smi/acebbe5884474be7bbe6f54f427260af.png">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/20/nivida-smi/70ab0c924bab4b5d8abf8598e01687c8.png">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/20/nivida-smi/1b2aa6445e7d47b98fdda0dede11343d.png">
 <meta property="article:published_time" content="2022-06-20T03:24:11.000Z">
-<meta property="article:modified_time" content="2022-06-20T03:29:17.499Z">
+<meta property="article:modified_time" content="2022-06-20T08:18:03.908Z">
 <meta property="article:author" content="Wang Kunwei">
 <meta property="article:tag" content="计算机命令">
 <meta name="twitter:card" content="summary_large_image">
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          2.4k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          17 分钟
+          20 分钟
         
       </span>
     
@@ -272,9 +272,9 @@
             
             <div class="markdown-body">
               
-              <p>转载自：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ceb3c020e06b">GPU之nvidia-smi命令详解</a></p>
+              <p>转载自：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ceb3c020e06b">GPU之nvidia-smi命令详解</a>（我在查询时候遇到了nvcc -V命令和nvidia-smi命令查询出来版本不一致，这是因为CUDA有两个主要的API:runtime API和driver API. 这两个API都有对应的CUDA版本。用于支持driver API的必要文件是由GPU driver installer安装的。nvidia-msi属于这一类；用于runtime API的必要条件是由CUDA Toolkit installer 安装的，有时候其会集成GPU driver installer。nvcc是与CUDA Toolkit 一起安装的CUDA compiler-driver tool,它只知道它自身构建时的CUDA runtime 版本。它不知道安装了什么版本的GPU driver,甚至不知道是否安装了GPU driver。</p>
 <p>1、nvidia-smi介绍</p>
-<p>nvidia-sim简称NVSMI，提供监控<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=GPU&amp;spm=1001.2101.3001.7020">GPU</a>使用情况和更改GPU状态的功能，是一个跨平台工具，支持所有标准的NVIDIA驱动程序支持的Linux和WindowsServer 2008 R2 开始的64位系统。这个工具是N卡驱动附带的，只要装好驱动，就会有这个命令</p>
+<p>nvidia-sim简称NVSMI，提供监控<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=GPU&amp;spm=1001.2101.3001.7020">GPU</a>使用情况和更改GPU状态的功能，是一个跨平台工具，支持所有标准的NVIDIA驱动程序支持的Linux和WindowsServer 2008 R2 开始的64位系统。这个工具是N卡驱动附带的，只要装好驱动，就会有这个命令。</p>
 <p>2、nvidia-smi常用命令介绍<br>
 1）显示GPU当前的状态：nvidia-smi<br>
 <img src="/2022/06/20/nivida-smi/fdf97e3eb1a6499b8d55e520eebcae11.png" srcset="/img/loading.gif" lazyload alt="image"></p>
