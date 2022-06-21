@@ -215,7 +215,7 @@
                 
 
 <div class="text-center tagcloud">
-  <a href="/tags/Attention/" style="font-size: 15px; color: #bbe">Attention</a> <a href="/tags/latex%E7%AC%A6%E5%8F%B7/" style="font-size: 15px; color: #bbe">latex符号</a> <a href="/tags/%E5%9B%BE%E5%8D%B7%E7%A7%AF/" style="font-size: 22.5px; color: #779bd3">图卷积</a> <a href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 22.5px; color: #779bd3">图神经网络</a> <a href="/tags/%E5%BC%80%E7%AF%87/" style="font-size: 15px; color: #bbe">开篇</a> <a href="/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/" style="font-size: 15px; color: #bbe">注意力机制</a> <a href="/tags/%E7%BB%83%E4%B9%A0/" style="font-size: 15px; color: #bbe">练习</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%91%BD%E4%BB%A4/" style="font-size: 15px; color: #bbe">计算机命令</a> <a href="/tags/%E9%A9%AC%E5%88%97%E4%B8%BB%E4%B9%89/" style="font-size: 30px; color: #337ab7">马列主义</a>
+  <a href="/tags/Attention/" style="font-size: 15px; color: #bbe">Attention</a> <a href="/tags/Pytorch/" style="font-size: 15px; color: #bbe">Pytorch</a> <a href="/tags/cuda/" style="font-size: 15px; color: #bbe">cuda</a> <a href="/tags/latex%E7%AC%A6%E5%8F%B7/" style="font-size: 15px; color: #bbe">latex符号</a> <a href="/tags/%E5%9B%BE%E5%8D%B7%E7%A7%AF/" style="font-size: 22.5px; color: #779bd3">图卷积</a> <a href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 22.5px; color: #779bd3">图神经网络</a> <a href="/tags/%E5%BC%80%E7%AF%87/" style="font-size: 15px; color: #bbe">开篇</a> <a href="/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/" style="font-size: 15px; color: #bbe">注意力机制</a> <a href="/tags/%E7%BB%83%E4%B9%A0/" style="font-size: 15px; color: #bbe">练习</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%91%BD%E4%BB%A4/" style="font-size: 15px; color: #bbe">计算机命令</a> <a href="/tags/%E9%A9%AC%E5%88%97%E4%B8%BB%E4%B9%89/" style="font-size: 30px; color: #337ab7">马列主义</a>
 </div>
 
               </div>
@@ -269,7 +269,37 @@
   
   
 </div>
-
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("04/28/2022 10:21:08");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
   </footer>
 
   <!-- Scripts -->

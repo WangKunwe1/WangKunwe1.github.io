@@ -405,6 +405,57 @@
     
     <div class="category row nomargin-x">
       <a class="category-item collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="计算机相关"
+        id="heading-be4a751215b631d00209764ee2a298c1" role="tab" data-toggle="collapse" href="#collapse-be4a751215b631d00209764ee2a298c1"
+        aria-expanded="false"
+      >
+        计算机相关
+        <span class="list-group-count"></span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+        <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9B%B8%E5%85%B3/" class="category-count col-2 col-md-1 col-xm-1">
+          <i class="iconfont icon-articles"></i>
+          <span>2</span>
+        </a>
+      
+      <div class="category-collapse collapse " id="collapse-be4a751215b631d00209764ee2a298c1"
+           role="tabpanel" aria-labelledby="heading-be4a751215b631d00209764ee2a298c1">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/06/21/CUDA-Pytorch-install/" title="CUDA_Pytorch_install"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">CUDA_Pytorch_install</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/06/20/nivida-smi/" title="nivida_smi"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">nivida_smi</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="注意力机制"
         id="heading-7b4e730d2756c8d55e46ed41e8d7b11a" role="tab" data-toggle="collapse" href="#collapse-7b4e730d2756c8d55e46ed41e8d7b11a"
         aria-expanded="false"
@@ -526,48 +577,6 @@
       </div>
     </div>
   
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="计算机相关"
-        id="heading-be4a751215b631d00209764ee2a298c1" role="tab" data-toggle="collapse" href="#collapse-be4a751215b631d00209764ee2a298c1"
-        aria-expanded="false"
-      >
-        计算机相关
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9B%B8%E5%85%B3/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>1</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-be4a751215b631d00209764ee2a298c1"
-           role="tabpanel" aria-labelledby="heading-be4a751215b631d00209764ee2a298c1">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2022/06/20/nivida-smi/" title="nivida_smi"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">nivida_smi</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
 </div>
 
 
@@ -622,7 +631,37 @@
   
   
 </div>
-
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("04/28/2022 10:21:08");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
   </footer>
 
   <!-- Scripts -->
