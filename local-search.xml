@@ -4,7 +4,32 @@
   
   
   <entry>
-    <title>CUDA_Pytorch_install</title>
+    <title>fluid添加天气插件</title>
+    <link href="/2022/06/22/weather-%E6%8F%92%E4%BB%B6/"/>
+    <url>/2022/06/22/weather-%E6%8F%92%E4%BB%B6/</url>
+    
+    <content type="html"><![CDATA[<h1 id="fluid主题添加天气插件"><a class="markdownIt-Anchor" href="#fluid主题添加天气插件"></a> fluid主题添加天气插件</h1><p>网上找了好久都没有好的关于fluid添加天气插件的教程，自己也摸索了半天，终于弄好了，才发现其实很简单。</p><p>天气插件有好多，我本来是想用中国天气的，结果进到中国天气的插件页后就要重新登录，然后就又找不到了，这个插件页了。总之是自己笨，就转去<a href="https://www.seniverse.com/">心知天气</a>了。</p><p>首先需要注册账号，然后就是点击右上角控制台，在左边栏找到添加产品，点击它，随便明个名。</p><p>然后再打开<a href="https://www.seniverse.com/widgetv3">插件自定义网页</a>根据提示进行自定义，生成代码。这个代码就是你想要的得到的东西。</p><p>在./layout/_particials/文件夹新建weather.ejs文件，将刚才复制的代码粘贴上去，保存。</p><p>修改./layout/_particials/header/navigation.ejs在**&lt;/button&gt;**下面填写</p><p><code>&lt;%- partial('_partials/weather.ejs') %&gt;</code></p><p>这样就完事了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>fluid主题美化</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>天气插件</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>CUDA旧版本卸载和新版本安装以及相对于Pytorch安装</title>
     <link href="/2022/06/21/CUDA-Pytorch-install/"/>
     <url>/2022/06/21/CUDA-Pytorch-install/</url>
     
