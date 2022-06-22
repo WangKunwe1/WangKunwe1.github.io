@@ -33,8 +33,8 @@
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/21/CUDA-Pytorch-install/cudnn_download.jpg">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/21/CUDA-Pytorch-install/pytorchDownload.jpg">
 <meta property="og:image" content="https://wangkunwe1.github.io/2022/06/21/CUDA-Pytorch-install/torch.jpg">
-<meta property="article:published_time" content="2022-06-21T07:36:36.000Z">
-<meta property="article:modified_time" content="2022-06-21T08:08:23.919Z">
+<meta property="article:published_time" content="2022-06-21T07:36:36.574Z">
+<meta property="article:modified_time" content="2022-06-21T13:16:24.424Z">
 <meta property="article:author" content="Wang Kunwei">
 <meta property="article:tag" content="cuda">
 <meta property="article:tag" content="Pytorch">
@@ -79,7 +79,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"wangkunwe1.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"wangkunwe1.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"MSaoXFU2ytaeE365tYibfXwh-gzGzoHsz","app_key":"LhhQAncxC4p3O0U7IMa6e9Nm","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
@@ -299,7 +299,7 @@
 <p><img src="/2022/06/21/CUDA-Pytorch-install/CUDAdownload.jpg" srcset="/img/loading.gif" lazyload alt="CUDAdownload"></p>
 <p>下载时会提醒注册账号，用自己的邮箱注册一下就行了。</p>
 <h3 id="3安装过程"><a class="markdownIt-Anchor" href="#3安装过程"></a> （3）安装过程</h3>
-<p>安装过程比较简单我当时没截图，就不重新截图了。基本就说双击刚才下载的exe文件，选择安装路径，弹出安装程序，选择同意并继续，选择自定义。</p>
+<p>安装过程比较简单我当时没截图，就不重新截图了。基本上就是双击刚才下载的exe文件，选择安装路径，弹出安装程序，选择同意并继续，选择自定义。</p>
 <p>在自定义这里要看下自定义安装选项，如果出现有组件的你电脑目前安装的驱动版本号<mark>新于</mark>Cuda本身自带的驱动版本号，那一定要把这个勾去掉。否则会安装失败(相同的话，也不用去勾选)。然后一路下一步最后提示CUDA安装程序已完成，关闭。</p>
 <h3 id="4查看是否安装成功"><a class="markdownIt-Anchor" href="#4查看是否安装成功"></a> （4）查看是否安装成功</h3>
 <p>打开cmd,输入</p>
@@ -546,42 +546,48 @@
   
     <div class="footer-content">
        <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+	  <!--《添加网站运行时间 -->
+<br/>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+var now = new Date(); 
+
+function createtime() {
+    //此处修改你的建站时间或者网站上线时间
+    var grt = new Date('04/28/2022 10:21:08');
+    now.setTime(now.getTime() + 250);
+    days = (now - grt) / 1000 / 60 / 60 / 24;
+
+    dnum = Math.floor(days);
+    hours = (now - grt) / 1000 / 60 / 60 - (24 * dnum);
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+        hnum = "0" + hnum;
+    }
+    minutes = (now - grt) / 1000 / 60 - (24 * 60 * dnum) - (60 * hnum);
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+        mnum = "0" + mnum;
+    }
+    seconds = (now - grt) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+        snum = "0" + snum;
+    }
+    document.getElementById("timeDate").innerHTML = " 本站已各种夹缝中安全运行 " + dnum + " 天 ";
+    document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+}
+setInterval("createtime()", 250);
+</script>
+
+<!-- 添加网站运行时间》-->
+
     </div>
   
   
   
   
-</div>
-<div>
-  <span id="timeDate">载入天数...</span>
-  <span id="times">载入时分秒...</span>
-  <script>
-  var now = new Date();
-  function createtime(){
-      var grt= new Date("04/28/2022 10:21:08");//此处修改你的建站时间或者网站上线时间
-      now.setTime(now.getTime()+250);
-      days = (now - grt ) / 1000 / 60 / 60 / 24;
-      dnum = Math.floor(days);
-      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
-      hnum = Math.floor(hours);
-      if(String(hnum).length ==1 ){
-          hnum = "0" + hnum;
-      }
-      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
-      mnum = Math.floor(minutes);
-      if(String(mnum).length ==1 ){
-                mnum = "0" + mnum;
-      }
-      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
-      snum = Math.round(seconds);
-      if(String(snum).length ==1 ){
-                snum = "0" + snum;
-      }
-      document.getElementById("timeDate").innerHTML = "🚀 for&nbsp"+dnum+"&nbspdays";  //此次自定义显示内容
-      document.getElementById("times").innerHTML = hnum + "&nbsphr&nbsp" + mnum + "&nbspmin&nbsp" + snum + "&nbspsec";
-  }  //此次自定义显示内容
-  setInterval("createtime()",250);
-  </script>
 </div>
   </footer>
 
@@ -621,6 +627,23 @@
   </script>
 
 
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
 
 
 
@@ -764,6 +787,8 @@
   <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
 
 
 
