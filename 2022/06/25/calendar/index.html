@@ -16,23 +16,23 @@
   <meta name="author" content="Wang Kunwei">
   <meta name="keywords" content="demo hexo">
   
-    <meta name="description" content="fluid主题添加天气插件 网上找了好久都没有好的关于fluid添加天气插件的教程，自己也摸索了半天，终于弄好了，才发现其实很简单。 天气插件有好多，我本来是想用中国天气的，结果进到中国天气的插件页后就要重新登录，然后就又找不到了，这个插件页了。总之是自己笨，就转去心知天气了。 首先需要注册账号，然后就是点击右上角控制台，在左边栏找到添加产品，点击它，随便明个名。 然后再打开插件自定义网页根据提">
+    <meta name="description" content="在 tsuiraku的网页看这个云日历的插件效果挺好看的，就想装自己的网页上。  安装命令 主要参考了小冰博客[1]和AIGISSS[2]这两位博主的教程，内容是相似的，具体的操作步骤就按照教程来就行，操作起来也不麻烦。 首先，输入以下代码安装hexo-githubcalendar。 1npm i hexo-githubcalendar --save AIGISSS博主提醒一定要加–save，否则">
 <meta property="og:type" content="article">
-<meta property="og:title" content="fluid添加天气插件">
-<meta property="og:url" content="https://wangkunwe1.github.io/2022/06/22/weather-%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:title" content="fluid主题GitHub-Calendar云日历踩坑记">
+<meta property="og:url" content="https://wangkunwe1.github.io/2022/06/25/calendar/index.html">
 <meta property="og:site_name" content="胖对儿书屋">
-<meta property="og:description" content="fluid主题添加天气插件 网上找了好久都没有好的关于fluid添加天气插件的教程，自己也摸索了半天，终于弄好了，才发现其实很简单。 天气插件有好多，我本来是想用中国天气的，结果进到中国天气的插件页后就要重新登录，然后就又找不到了，这个插件页了。总之是自己笨，就转去心知天气了。 首先需要注册账号，然后就是点击右上角控制台，在左边栏找到添加产品，点击它，随便明个名。 然后再打开插件自定义网页根据提">
+<meta property="og:description" content="在 tsuiraku的网页看这个云日历的插件效果挺好看的，就想装自己的网页上。  安装命令 主要参考了小冰博客[1]和AIGISSS[2]这两位博主的教程，内容是相似的，具体的操作步骤就按照教程来就行，操作起来也不麻烦。 首先，输入以下代码安装hexo-githubcalendar。 1npm i hexo-githubcalendar --save AIGISSS博主提醒一定要加–save，否则">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://wangkunwe1.github.io/images/weather.png">
-<meta property="article:published_time" content="2022-06-22T11:57:11.000Z">
-<meta property="article:modified_time" content="2022-06-23T08:21:23.604Z">
+<meta property="og:image" content="https://wangkunwe1.github.io/images/calendar.png">
+<meta property="article:published_time" content="2022-06-25T09:37:35.000Z">
+<meta property="article:modified_time" content="2022-06-25T10:54:44.250Z">
 <meta property="article:author" content="Wang Kunwei">
-<meta property="article:tag" content="天气插件">
+<meta property="article:tag" content="云日历插件 fluid美化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://wangkunwe1.github.io/images/weather.png">
+<meta name="twitter:image" content="https://wangkunwe1.github.io/images/calendar.png">
   
   
-  <title>fluid添加天气插件 - 胖对儿书屋</title>
+  <title>fluid主题GitHub-Calendar云日历踩坑记 - 胖对儿书屋</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -221,7 +221,7 @@ WIDGET = {
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="fluid添加天气插件"></span>
+            <span id="subtitle" data-typed-text="fluid主题GitHub-Calendar云日历踩坑记"></span>
           
         </div>
 
@@ -232,8 +232,8 @@ WIDGET = {
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-06-22 19:57" pubdate>
-          2022年6月22日 晚上
+        <time datetime="2022-06-25 17:37" pubdate>
+          2022年6月25日 下午
         </time>
       </span>
     
@@ -244,7 +244,7 @@ WIDGET = {
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          398 字
+          3.1k 字
         
       </span>
     
@@ -255,7 +255,7 @@ WIDGET = {
         
         
         
-          4 分钟
+          27 分钟
         
       </span>
     
@@ -301,20 +301,41 @@ WIDGET = {
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">fluid添加天气插件</h1>
+            <h1 style="display: none">fluid主题GitHub-Calendar云日历踩坑记</h1>
             
             <div class="markdown-body">
               
-              <h1 id="fluid主题添加天气插件"><a class="markdownIt-Anchor" href="#fluid主题添加天气插件"></a> fluid主题添加天气插件</h1>
-<p>网上找了好久都没有好的关于fluid添加天气插件的教程，自己也摸索了半天，终于弄好了，才发现其实很简单。</p>
-<p>天气插件有好多，我本来是想用中国天气的，结果进到中国天气的插件页后就要重新登录，然后就又找不到了，这个插件页了。总之是自己笨，就转去<a target="_blank" rel="noopener" href="https://www.seniverse.com/">心知天气</a>了。</p>
-<p>首先需要注册账号，然后就是点击右上角控制台，在左边栏找到添加产品，点击它，随便明个名。</p>
-<p>然后再打开<a target="_blank" rel="noopener" href="https://www.seniverse.com/widgetv3">插件自定义网页</a>根据提示进行自定义，生成代码。这个代码就是你想要的得到的东西。</p>
-<p>在./layout/_particials/文件夹新建weather.ejs文件，将刚才复制的代码粘贴上去，保存。</p>
-<p>修改./layout/_particials/header/navigation.ejs在**&lt;/button&gt;**下面填写</p>
-<p><code>&lt;%- partial('_partials/weather.ejs') %&gt;</code></p>
-<p>这样就完事了。</p>
-
+              <p>在<a target="_blank" rel="noopener" href="https://tsuiraku.com/about/"> tsuiraku</a>的网页看这个云日历的插件效果挺好看的，就想装自己的网页上。</p>
+<h2 id="安装命令"><a class="markdownIt-Anchor" href="#安装命令"></a> 安装命令</h2>
+<p>主要参考了<a target="_blank" rel="noopener" href="https://zfe.space/post/hexo-githubcalendar.html">小冰博客</a><sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://zfe.space/post/hexo-githubcalendar.html
+">[1]</span></a></sup>和<a target="_blank" rel="noopener" href="https://aigisss.com/blog/posts/91dc324b.html">AIGISSS</a><sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://aigisss.com/blog/posts/91dc324b.html
+">[2]</span></a></sup>这两位博主的教程，内容是相似的，具体的操作步骤就按照教程来就行，操作起来也不麻烦。</p>
+<p>首先，输入以下代码安装hexo-githubcalendar。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">npm <span class="hljs-selector-tag">i</span> hexo-githubcalendar <span class="hljs-attr">--save</span><br></code></pre></td></tr></table></figure>
+<p>AIGISSS博主提醒一定要加–save，否则本地预览可能无法显示，我没有试不加的情况，老老实实照做就是。</p>
+<h2 id="修改根配置文件_config配置项"><a class="markdownIt-Anchor" href="#修改根配置文件_config配置项"></a> 修改根配置文件_config配置项</h2>
+<p>然后，将配置项代码复制到根目录下的_config.yml文件中。</p>
+<p>我从https://github.com/Zfour/hexo-github-calendar/issues<sup id="fnref:3" class="footnote-ref"><a href="#fn:3" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://github.com/Zfour/hexo-github-calendar/issues
+">[3]</span></a></sup>找到了fluid主题可用的配置项代码，请根据自己的主题选择不同代码。</p>
+<figure class="highlight nim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs nim"><span class="hljs-comment"># Fluid</span><br><span class="hljs-comment"># Ice Kano Plus_in</span><br><span class="hljs-comment"># Hexo Github Canlendar</span><br><span class="hljs-comment"># Author: Ice Kano</span><br><span class="hljs-comment"># Modify: Lete乐特</span><br>githubcalendar:<br>  enable: <span class="hljs-literal">true</span><br>  priority: <span class="hljs-number">0</span><br>  enable_page: /<br>  user: <span class="hljs-type">WangKunwe1</span><br>  layout:<br>    <span class="hljs-keyword">type</span>: class<br>    name: container<br>    index: <span class="hljs-number">1</span><br>  githubcalendar_html: &#x27;&lt;<span class="hljs-keyword">div</span> id=<span class="hljs-string">&quot;github-calendar&quot;</span> style=<span class="hljs-string">&quot;width:100%;height:auto;padding:10px;margin-bottom:20px&quot;</span>&gt;&lt;<span class="hljs-keyword">div</span> id=<span class="hljs-string">&quot;github_loading&quot;</span> style=<span class="hljs-string">&quot;width:10%;height:100%;margin:0 auto;display: block&quot;</span>&gt;&lt;svg xmlns=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span> xmlns:xlink=<span class="hljs-string">&quot;http://www.w3.org/1999/xlink&quot;</span>  viewBox=<span class="hljs-string">&quot;0 0 50 50&quot;</span> style=<span class="hljs-string">&quot;enable-background:new 0 0 50 50&quot;</span> xml:space=<span class="hljs-string">&quot;preserve&quot;</span>&gt;&lt;path fill=<span class="hljs-string">&quot;#d0d0d0&quot;</span> d=<span class="hljs-string">&quot;M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z&quot;</span> transform=<span class="hljs-string">&quot;rotate(275.098 25 25)&quot;</span>&gt;&lt;animateTransform attributeType=<span class="hljs-string">&quot;xml&quot;</span> attributeName=<span class="hljs-string">&quot;transform&quot;</span> <span class="hljs-keyword">type</span>=<span class="hljs-string">&quot;rotate&quot;</span> <span class="hljs-keyword">from</span>=<span class="hljs-string">&quot;0 25 25&quot;</span> to=<span class="hljs-string">&quot;360 25 25&quot;</span> dur=<span class="hljs-string">&quot;0.6s&quot;</span> repeatCount=<span class="hljs-string">&quot;indefinite&quot;</span>&gt;&lt;/animateTransform&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/<span class="hljs-keyword">div</span>&gt;&lt;<span class="hljs-keyword">div</span> id=<span class="hljs-string">&quot;github_container&quot;</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;&#x27;<br>  pc_minheight: <span class="hljs-number">200</span>px<br>  mobile_minheight: <span class="hljs-number">0</span>px<br>  color: <span class="hljs-string">&quot;[&#x27;#ebedf0&#x27;, &#x27;#f1f8ff&#x27;, &#x27;#dbedff&#x27;, &#x27;#c8e1ff&#x27;, &#x27;#79b8ff&#x27;, &#x27;#2188ff&#x27;, &#x27;#0366d6&#x27;, &#x27;#005cc5&#x27;, &#x27;#044289&#x27;, &#x27;#032f62&#x27;, &#x27;#05264c&#x27;]&quot;</span><br>  api: https://python-github-calendar-api.vercel.app/api<br>  <span class="hljs-comment"># api: https://python-gitee-calendar-api.vercel.app/api</span><br>  calendar_js: https://cdn.jsdelivr.net/gh/<span class="hljs-type">Zfour</span>/hexo-github-calendar@<span class="hljs-number">1</span>.<span class="hljs-number">21</span>/hexo_githubcalendar.js<br>  plus_style: <span class="hljs-string">&quot;#github_container &gt; .position-relative &gt; .border&#123;border:0!important&#125;#github-calendar&#123;position: relative;margin-top: -2rem;background-color: var(--board-bg-color);transition: background-color 0.2s ease-in-out;border-radius: 0.5rem;z-index: 3;-webkit-box-shadow: 0 12px 15px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);box-shadow: 0 12px 15px 0 rgb(0 0 0 / 24%), 0 17px 50px 0 rgb(0 0 0 / 19%);&#125;&quot;</span><br><br></code></pre></td></tr></table></figure>
+<p>如果找不到自己的主题，可以自己修改配置项来适配自己的主题。具体的配置项的含义请查看上面给的教程。下面说说安装过程遇到的坑。</p>
+<h2 id="踩坑经历"><a class="markdownIt-Anchor" href="#踩坑经历"></a> 踩坑经历</h2>
+<h3 id="坑1_config配置项安装位置"><a class="markdownIt-Anchor" href="#坑1_config配置项安装位置"></a> 坑1——_config配置项安装位置</h3>
+<p>在这里我遇到了第一个大坑，就是不知道配置项这段代码的添加文件是哪个，作者提要醒复制到的_config.yml文件而不能是主题的，我以为是让复制到根目录下的 _config.fluid.yml文件中，而不是/theme/fluid/ _config.yml文件。但是hexo g会出现错误提醒：</p>
+<p><img src="/2022/06/25/calendar/priority_error.png" srcset="/img/loading.gif" lazyload alt="priority_error"></p>
+<p>解决方法很简单，代码复制到根目录下的_config.yml中，hexo g就没问题了，本地预览也正常。</p>
+<h3 id="坑2about页安装踩坑"><a class="markdownIt-Anchor" href="#坑2about页安装踩坑"></a> 坑2——about页安装踩坑</h3>
+<p>我本来是想安装到<strong>关于页</strong>微信哔哩哔哩小图标下面的，但是结果不是安装到了上面某个位置就是找不到。</p>
+<p><img src="/2022/06/25/calendar/%E4%BA%91%E6%97%A5%E5%8E%86%E6%8F%92%E4%BB%B6%E4%BD%8D%E7%BD%AE.png" srcset="/img/loading.gif" lazyload alt="云日历插件位置"></p>
+<p><img src="/2022/06/25/calendar/%E4%BA%91%E6%97%A5%E5%8E%86%E6%8F%92%E4%BB%B6%E6%95%88%E6%9E%9C.png" srcset="/img/loading.gif" lazyload alt="云日历插件效果"></p>
+<p>目前我知道的就是通过修改配置项代码中的layout配置就可以改变云日历的显示位置，但是我实在找不到应该用那个class或者id的name才能实现我要的效果，如果有大神知道怎么操作请务必留言告知我啊，胖对儿不胜感激！</p>
+<h2 id="吐槽一下"><a class="markdownIt-Anchor" href="#吐槽一下"></a> 吐槽一下</h2>
+<p>自己对hexo 代码完全不懂，除非是我拿过来直接能用网上的代码，不然随随便便一个小的error我就找半天解决方法。从昨天看到别人网页上这个云日历效果感觉不错，到在自己网页看到类似效果，中间跌跌撞撞花费了一天时间。好好加油吧！</p>
+<h2 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考：</h2>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://zfe.space/post/hexo-githubcalendar.html">https://zfe.space/post/hexo-githubcalendar.html</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://aigisss.com/blog/posts/91dc324b.html">https://aigisss.com/blog/posts/91dc324b.html</a>
+<a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:3" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://github.com/Zfour/hexo-github-calendar/issues">https://github.com/Zfour/hexo-github-calendar/issues</a>
+<a href="#fnref:3" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
               
             </div>
 			<div style="text-align:right;"> <!-- 自己添加的“分享到”模块：开始。用的是 social-share.js。让所有的分享按钮右对齐-->
@@ -376,7 +397,7 @@ WIDGET = {
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%A4%A9%E6%B0%94%E6%8F%92%E4%BB%B6/">#天气插件</a>
+        <a href="/tags/%E4%BA%91%E6%97%A5%E5%8E%86%E6%8F%92%E4%BB%B6-fluid%E7%BE%8E%E5%8C%96/">#云日历插件 fluid美化</a>
       
     </div>
   
@@ -388,8 +409,8 @@ WIDGET = {
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>fluid添加天气插件</div>
-      <div>https://wangkunwe1.github.io/2022/06/22/weather-插件/</div>
+      <div>fluid主题GitHub-Calendar云日历踩坑记</div>
+      <div>https://wangkunwe1.github.io/2022/06/25/calendar/</div>
     </div>
     <div class="license-meta">
       
@@ -401,7 +422,7 @@ WIDGET = {
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年6月22日</div>
+          <div>2022年6月25日</div>
         </div>
       
       
@@ -431,18 +452,12 @@ WIDGET = {
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/06/23/wallpaper/" title="好看的壁纸网站">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">好看的壁纸网站</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/06/21/CUDA-Pytorch-install/" title="CUDA旧版本卸载和新版本安装以及相对于Pytorch安装">
-                        <span class="hidden-mobile">CUDA旧版本卸载和新版本安装以及相对于Pytorch安装</span>
+                      <a href="/2022/06/23/wallpaper/" title="好看的壁纸网站">
+                        <span class="hidden-mobile">好看的壁纸网站</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
