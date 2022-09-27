@@ -16,23 +16,34 @@
   <meta name="author" content="Wang Kunwei">
   <meta name="keywords" content="demo hexo">
   
-    <meta name="description" content="this is hexo-demo">
-<meta property="og:type" content="website">
-<meta property="og:title" content="归档">
-<meta property="og:url" content="https://www.pangduier.cn/archives/2022/page/3/index.html">
+    <meta name="description" content="本文记录博主在python 3.6版本下import matplotlib 出现报错的解决方案。 报错信息为：RuntimError:module compiled against API version 0xc but this veersion of numpy is 0xb 网上找了很多答案，都没有解决，但是已经知道是numpy和matplotlib版本冲突问题。 后来参考https:&#x2F;&#x2F;b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python 3.6 matplotlib numpy 版本对应关系---Import matplotlib 报错">
+<meta property="og:url" content="https://www.pangduier.cn/2022/09/27/import-matplotlib-error/index.html">
 <meta property="og:site_name" content="胖对儿书屋">
-<meta property="og:description" content="this is hexo-demo">
+<meta property="og:description" content="本文记录博主在python 3.6版本下import matplotlib 出现报错的解决方案。 报错信息为：RuntimError:module compiled against API version 0xc but this veersion of numpy is 0xb 网上找了很多答案，都没有解决，但是已经知道是numpy和matplotlib版本冲突问题。 后来参考https:&#x2F;&#x2F;b">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.pangduier.cn/images/cmd.png">
+<meta property="article:published_time" content="2022-09-27T03:19:53.000Z">
+<meta property="article:modified_time" content="2022-09-27T07:14:47.679Z">
 <meta property="article:author" content="Wang Kunwei">
-<meta property="article:tag" content="demo hexo">
+<meta property="article:tag" content="插件冲突">
+<meta property="article:tag" content="Pycharm">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.pangduier.cn/images/cmd.png">
   
   
-  <title>归档 - 胖对儿书屋</title>
+  <title>python 3.6 matplotlib numpy 版本对应关系---Import matplotlib 报错 - 胖对儿书屋</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
 
@@ -81,7 +92,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -205,15 +216,63 @@ WIDGET = {
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+     style="background: url('/images/wallhaven-9mldxx.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="归档"></span>
+            <span id="subtitle" data-typed-text="python 3.6 matplotlib numpy 版本对应关系---Import matplotlib 报错"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-27 11:19" pubdate>
+          2022年9月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          255 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          3 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
 
         
       </div>
@@ -229,100 +288,245 @@ WIDGET = {
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 32 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2022</p>
-    
-    <a href="/2022/05/17/%E8%AE%BA%E6%88%98%E6%96%97%E5%94%AF%E7%89%A9%E4%B8%BB%E4%B9%89/" class="list-group-item list-group-item-action">
-      <time>05-17</time>
-      <div class="list-group-item-title">论战斗唯物主义</div>
-    </a>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">python 3.6 matplotlib numpy 版本对应关系---Import matplotlib 报错</h1>
+            
+            <div class="markdown-body">
+              
+              <p>本文记录博主在<strong style="color:red"><strong>python 3.6</strong></strong>版本下<strong>import matplotlib</strong> 出现报错的解决方案。</p>
+<p>报错信息为：<strong style="color:red">RuntimError:module compiled against API version 0xc but this veersion of numpy is 0xb</strong></p>
+<p>网上找了很多答案，都没有解决，但是已经知道是numpy和matplotlib版本冲突问题。</p>
+<p>后来参考https://blog.csdn.net/Alen666/article/details/105655868的版本对应关系，问题解决。我更新后的版本对应关系如下：</p>
+<p><img src="/2022/09/27/import-matplotlib-error/conda_list.png" srcset="/img/loading.gif" lazyload alt="conda_list"></p>
+
+              
+            </div>
+			<div style="text-align:right;"> <!-- 自己添加的“分享到”模块：开始。用的是 social-share.js。让所有的分享按钮右对齐-->
+	
+				<div class="social-share-container" style="margin-top: 15px;"> <!-- 生成一组分享按钮 -->
+					 <!--如果博客语言是中文，就显示“点击分享到：”，非中文一律显示“Share it:”-->
+						点击分享到：&nbsp;&nbsp;
+					
+				</div>
+				<!-- 加载 jQuery 库 -->
+				
+<script src="/js/jquery.min.js"></script>
+
+				<!-- 导入 qrcode.min.js -->
+				
+<script src="/js/qrcode.min.js"></script>
+
+				<!-- 加载 social-share.js 的 js 库，另外还要加载 social-share.js 的 CSS，可以修改 `_config.fluid.yml` 的 `custom_css` 加载，也可以修改 `themes/fluid/layout/_partial/css.ejs` 加载。-->
+				
+<script src="/js/social-share.min.js"></script>
+
+				<script> 
+				/* 执行 js 代码，new 一个新对象，详见 social-share.js 在 GitHub 的文档 */
+					new SocialShare('.social-share-container', {
+						theme: 'circle',  // 使用圆形主题
+						// 单独定义wechat分享参数
+						wechat: {
+							sort: 1, // 排序参数，数字较小的展示在前面,默认999
+						}
+					});		
+				</script>
+			</div> <!-- 自己添加的“分享到”模块：结束。-->
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
   
     
-    <a href="/2022/05/17/guojiageming/" class="list-group-item list-group-item-action">
-      <time>05-17</time>
-      <div class="list-group-item-title">论国家与革命</div>
-    </a>
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9B%B8%E5%85%B3/" class="category-chain-item">计算机相关</a>
   
-    
-    <a href="/2022/05/17/gedagangling/" class="list-group-item list-group-item-action">
-      <time>05-17</time>
-      <div class="list-group-item-title">哥达纲领批判-笔记</div>
-    </a>
   
+
+      </span>
     
-    <a href="/2022/05/14/%E7%BB%8F%E6%B5%8E%E5%AD%A6%E5%93%B2%E5%AD%A6%E6%89%8B%E7%A8%BF%E7%AC%94%E8%AE%B01844/" class="list-group-item list-group-item-action">
-      <time>05-14</time>
-      <div class="list-group-item-title">经济学哲学手稿笔记1844</div>
-    </a>
   
-    
-    <a href="/2022/05/14/%E9%9B%87%E4%BD%A3%E5%8A%B3%E5%8A%A8%E4%B8%8E%E8%B5%84%E6%9C%AC%E7%AC%94%E8%AE%B0/" class="list-group-item list-group-item-action">
-      <time>05-14</time>
-      <div class="list-group-item-title">雇佣劳动与资本笔记</div>
-    </a>
+</span>
+
+    </div>
   
-    
-    <a href="/2022/05/14/%E7%A5%9E%E5%9C%A3%E5%AE%B6%E6%97%8F%E7%AC%94%E8%AE%B0/" class="list-group-item list-group-item-action">
-      <time>05-14</time>
-      <div class="list-group-item-title">神圣家族笔记</div>
-    </a>
   
-    
-    <a href="/2022/05/14/%E8%AE%BA%E5%9B%BD%E5%AE%B6%E7%AC%94%E8%AE%B0/" class="list-group-item list-group-item-action">
-      <time>05-14</time>
-      <div class="list-group-item-title">论国家笔记</div>
-    </a>
-  
-    
-    <a href="/2022/05/14/%E6%84%8F%E8%AF%86%E5%BD%A2%E6%80%81%E7%9A%84%E5%AE%9E%E8%B7%B5%E7%BB%93%E6%9E%84/" class="list-group-item list-group-item-action">
-      <time>05-14</time>
-      <div class="list-group-item-title">意识形态的实践结构</div>
-    </a>
-  
-    
-    <a href="/2022/05/12/marxism_booklist/" class="list-group-item list-group-item-action">
-      <time>05-12</time>
-      <div class="list-group-item-title">马列主义入门书单</div>
-    </a>
-  
-    
-    <a href="/2022/05/07/Seq2SeqWithAttention/" class="list-group-item list-group-item-action">
-      <time>05-07</time>
-      <div class="list-group-item-title">Seq2SeqWithAttention</div>
-    </a>
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%8F%92%E4%BB%B6%E5%86%B2%E7%AA%81/">#插件冲突</a>
+      
+        <a href="/tags/Pycharm/">#Pycharm</a>
+      
+    </div>
   
 </div>
 
 
-  <nav aria-label="navigation">
-    <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/archives/2022/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/archives/2022/">1</a><a class="page-number" href="/archives/2022/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/2022/page/4/#board">4</a><a class="extend next" rel="next" href="/archives/2022/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
-    </span>
-  </nav>
+              
+  
 
-
-
-
-              </div>
-            </div>
-          </div>
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>python 3.6 matplotlib numpy 版本对应关系---Import matplotlib 报错</div>
+      <div>https://www.pangduier.cn/2022/09/27/import-matplotlib-error/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wang Kunwei</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月27日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
         </div>
       </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/14/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B02/" title="论文笔记2">
+                        <span class="hidden-mobile">论文笔记2</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'preferred-color-scheme';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'WangKunwe1/commit-utterance');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
     
 
     
@@ -496,6 +700,137 @@ setInterval("createtime()", 250);
 
 
 
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 

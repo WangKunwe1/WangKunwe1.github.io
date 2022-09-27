@@ -1,3 +1,4 @@
+https://www.pangduier.cn/2022/09/27/import-matplotlib-error/
 https://www.pangduier.cn/about/index.html
 https://www.pangduier.cn/2022/09/14/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B02/
 https://www.pangduier.cn/2022/06/30/%E9%AB%98%E8%80%83%E5%BF%97%E6%84%BF%E5%A1%AB%E6%8A%A5/
@@ -49,6 +50,8 @@ https://www.pangduier.cn/tags/family/
 https://www.pangduier.cn/tags/%E5%BF%97%E6%84%BF%E5%A1%AB%E6%8A%A5-%E6%B2%B3%E5%8D%97%E9%AB%98%E8%80%83/
 https://www.pangduier.cn/tags/%E4%BA%BA%E8%84%B8%E7%BE%8E%E4%B8%BD%E9%A2%84%E6%B5%8B/
 https://www.pangduier.cn/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/
+https://www.pangduier.cn/tags/%E6%8F%92%E4%BB%B6%E5%86%B2%E7%AA%81/
+https://www.pangduier.cn/tags/Pycharm/
 https://www.pangduier.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9B%B8%E5%85%B3/
 https://www.pangduier.cn/categories/%E5%85%B1%E4%BA%A7%E5%85%9A%E7%90%86%E8%AE%BA%E7%9B%B8%E5%85%B3/
 https://www.pangduier.cn/categories/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/
